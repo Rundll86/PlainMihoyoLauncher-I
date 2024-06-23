@@ -1,0 +1,17 @@
+{
+  "name": "foxlauncher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron-ofp": "^1.0.100",
+    "ts-loader": "^9.5.1",
+    "type-electron": "^1.0.4"
+  }
+}

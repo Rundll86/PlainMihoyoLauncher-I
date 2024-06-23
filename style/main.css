@@ -1,0 +1,189 @@
+@font-face {
+    font-family: "hywh";
+    src: url(../fonts/hywh.ttf);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: "hywh";
+    color: black;
+    transition: all .2s ease-in-out;
+    user-select: none;
+}
+
+.flexbox {
+    display: flex;
+}
+
+.flexbox.column {
+    flex-direction: column;
+}
+
+.flexup {
+    flex: 0 1 auto;
+}
+
+.flexcenter {
+    flex: 1 1 auto;
+}
+
+.flexbottom {
+    flex: 0 1 auto;
+}
+
+body {
+    background-color: rgb(255, 235, 197);
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: none;
+}
+
+#nav {
+    background-color: orange;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    align-items: center;
+}
+
+#title {
+    color: white;
+    font-size: 20px;
+    display: inline-block;
+    margin-right: auto;
+    margin-left: 20px;
+}
+
+#menu-list {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#control-bar {
+    margin-right: 20px;
+    margin-left: auto;
+}
+
+.margin-l {
+    margin-left: 20px;
+}
+
+#loginbar {
+    width: 60%;
+    background-color: rgb(255, 249, 237);
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+}
+
+#game-panel {
+    padding: 20px;
+    justify-content: center;
+}
+
+button {
+    border: 1px orange solid;
+    background-color: white;
+    padding: 10px 15px;
+    color: orange;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+button.big {
+    width: 90%;
+    height: 40px;
+}
+
+button.small {
+    width: 40%;
+    height: 40px;
+}
+
+button:hover {
+    border: 1px orange solid;
+    background-color: rgb(255, 235, 197);
+}
+
+button.label {
+    padding: 5px 10px;
+    background-color: transparent;
+    color: orange;
+    margin: 10px;
+    border-radius: 15px;
+    border: none;
+}
+
+button.label.circle {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+button.label.white {
+    background-color: transparent;
+    color: white;
+}
+
+button.label:hover {
+    background-color: rgb(255, 235, 197);
+    color: orange;
+}
+
+button.label.white:hover {
+    background-color: rgb(255, 188, 64);
+    color: white;
+}
+
+button.label.selected {
+    background-color: orange;
+    color: white;
+}
+
+button.label.white.selected {
+    background-color: white;
+    color: orange;
+}
+
+.textcenter {
+    text-align: center;
+}
+
+#avatar {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+#userinfo {
+    align-items: center;
+    justify-content: center;
+}
+
+#launchbar {
+    margin-bottom: 20px;
+}
+
+#username {
+    font-size: 20px;
+}
+
+.fa {
+    color: inherit;
+}
+
+#accountset {
+    display: flex;
+    background-color: rgb(255, 238, 206);
+    border-radius: 5px;
+    padding: 0px 10px;
+    margin-top: 15px;
+}
