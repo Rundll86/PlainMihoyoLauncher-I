@@ -3,3 +3,4 @@ electron
 index.js
 dataStruct.js
 messageBox.js
+script/dist
