@@ -2,9 +2,9 @@
   "name": "foxlauncher",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "script/entry/index.js",
   "scripts": {
-    "test": "tsc && eop start"
+    "test": "tsc -p tsconfig/script.json && tsc -p tsconfig/entry.json && eop start"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,7 @@
 {
     "project": {
         "name": "some-app",
-        "entry": "index.js",
+        "entry": "script/entry/index.js",
         "files": [],
         "dirs": [],
         "excludes": []

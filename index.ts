@@ -1,7 +1,17 @@
-const { app, BrowserWindow, ipcMain } = require("type-electron");
-const path = require("path");
-const process = require("process");
-const child_process = require("child_process");
+import { app, BrowserWindow, ipcMain } from "type-electron";
+import path from "path";
+import fs from "fs";
+import process from "process";
+import child_process from "child_process";
+import * as saveTool from "save-tool";
+saveTool.makeSaveRoot();
+saveTool.makeSaveDir("pml");
+if (saveTool.createSaveFile("pml", "clients.json")[0]) {
+    fs.writeFileSync(saveTool.useSaveDir("pml", "clients.json"), JSON.stringify([]), { encoding: "utf8" });
+};
+if (saveTool.createSaveFile("pml", "setting.json")[0]) {
+    fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify({}), { encoding: "utf8" });
+};
 app.on("ready", () => {
     const win = new BrowserWindow({
         width: 860,
