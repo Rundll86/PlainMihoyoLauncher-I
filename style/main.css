@@ -3,13 +3,17 @@
     src: url(../fonts/hywh.ttf);
 }
 
+@font-face {
+    font-family: "syht";
+    src: url(../fonts/syht.ttf);
+}
+
 * {
     padding: 0;
     margin: 0;
     border: none;
     outline: none;
     font-size: 16px;
-    font-family: "hywh";
     color: black;
     transition: all .2s ease-in-out;
     user-select: none;
@@ -51,6 +55,7 @@ body {
     position: relative;
     z-index: 2;
     align-items: center;
+    -webkit-app-region: drag;
 }
 
 #title {
@@ -59,6 +64,11 @@ body {
     display: inline-block;
     margin-right: auto;
     margin-left: 20px;
+}
+
+#menu-list,
+#control-bar {
+    -webkit-app-region: no-drag;
 }
 
 #menu-list {
@@ -105,9 +115,18 @@ button.small {
     height: 40px;
 }
 
+button.black {
+    border-color: black;
+    color: black;
+}
+
 button:hover {
     border: 1px orange solid;
     background-color: rgb(255, 235, 197);
+}
+
+button.black:hover {
+    color: orange;
 }
 
 button.label {

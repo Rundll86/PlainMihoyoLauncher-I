@@ -1,13 +1,18 @@
 "use strict";
-const gamepanel = document.getElementById("game-panel");
-const menulist = document.getElementById("menu-list");
-const controlbar = document.getElementById("control-bar");
-const accountset = document.getElementById("accountset");
+const gamepanel = getElementById("game-panel");
+const menulist = getElementById("menu-list");
+const controlbar = getElementById("control-bar");
+const launchNormal = getElementById("launch-normal");
+const launchAdvance = getElementById("launch-advance");
 var Colors;
 (function (Colors) {
     Colors[Colors["ORANGE"] = 0] = "ORANGE";
     Colors[Colors["WHITE"] = 1] = "WHITE";
 })(Colors || (Colors = {}));
+;
+function getElementById(id) {
+    return document.getElementById(id);
+}
 ;
 function eleTree(tag, childs = []) {
     let result = document.createElement(tag);
@@ -87,6 +92,22 @@ var labelButtonGroup;
     }
     labelButtonGroup.update = update;
     ;
+    function getElement(name, index) {
+        return _content[name][index];
+    }
+    labelButtonGroup.getElement = getElement;
+    ;
+    function getElementArray(name) {
+        return _content[name];
+    }
+    labelButtonGroup.getElementArray = getElementArray;
+    ;
+    function state(name, status = -1) {
+        _current[name] = status;
+        update(name);
+    }
+    labelButtonGroup.state = state;
+    ;
 })(labelButtonGroup || (labelButtonGroup = {}));
 ;
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
@@ -94,9 +115,7 @@ labelButtonGroup.create("menulist", ["[L] 启动", "[I] 安装", "[S] 设置", "
 labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
     useFaSpan("close")
-], controlbar, Colors.WHITE);
-labelButtonGroup.create("accountset", [
-    useFaSpan("bookmark-o"),
-    useFaSpan("pencil"),
-    useFaSpan("exchange")
-], accountset, Colors.ORANGE, 0, true);
+], controlbar, Colors.WHITE, -1);
+labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => minimize());
+labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => quit());
+launchNormal.addEventListener("click", () => launch());

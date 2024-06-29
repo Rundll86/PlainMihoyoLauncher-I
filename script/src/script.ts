@@ -1,7 +1,11 @@
-const gamepanel: HTMLElement = document.getElementById("game-panel") as HTMLElement;
-const menulist: HTMLElement = document.getElementById("menu-list") as HTMLElement;
-const controlbar: HTMLElement = document.getElementById("control-bar") as HTMLElement;
-const accountset: HTMLElement = document.getElementById("accountset") as HTMLElement;
+const gamepanel: HTMLElement = getElementById("game-panel");
+const menulist: HTMLElement = getElementById("menu-list");
+const controlbar: HTMLElement = getElementById("control-bar");
+const launchNormal = getElementById("launch-normal");
+const launchAdvance = getElementById("launch-advance");
+declare function quit(): void;
+declare function minimize(): void;
+declare function launch(): void;
 interface H_E_T_N_M {
     "a": HTMLAnchorElement;
     "abbr": HTMLElement;
@@ -127,6 +131,9 @@ type eleTreeContext<T extends HTMLElement> = {
 };
 type AnyObject<T = any> = { [key: string]: T };
 type ExpandObject<T> = T & { [key: string]: any; };
+function getElementById(id: string): HTMLElement {
+    return document.getElementById(id) as HTMLElement;
+};
 function eleTree<T extends HTMLElement = HTMLElement>(tag: keyof H_E_T_N_M, childs: eleTreeContext<HTMLElement>[] = []): eleTreeContext<T> {
     let result: ExpandObject<HTMLElement> = document.createElement(tag);
     childs.forEach(e => {
@@ -193,15 +200,23 @@ namespace labelButtonGroup {
             };
         };
     };
+    export function getElement(name: string, index: number): HTMLButtonElement {
+        return _content[name][index];
+    };
+    export function getElementArray(name: string): HTMLButtonElement[] {
+        return _content[name];
+    };
+    export function state(name: string, status: number = -1) {
+        _current[name] = status;
+        update(name);
+    };
 };
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
 labelButtonGroup.create("menulist", ["[L] 启动", "[I] 安装", "[S] 设置", "[M] 更多"], menulist, Colors.WHITE);
 labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
     useFaSpan("close")
-], controlbar, Colors.WHITE);
-labelButtonGroup.create("accountset", [
-    useFaSpan("bookmark-o"),
-    useFaSpan("pencil"),
-    useFaSpan("exchange")
-], accountset, Colors.ORANGE, 0, true);
+], controlbar, Colors.WHITE, -1);
+labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => minimize());
+labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => quit());
+launchNormal.addEventListener("click", () => launch());
