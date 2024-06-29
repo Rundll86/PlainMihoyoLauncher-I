@@ -1,19 +1,34 @@
 {
     "project": {
-        "name": "some-app",
+        "name": "Plain Mihoyo Launcher",
         "entry": "index.js",
-        "files": [],
-        "dirs": [],
-        "excludes": []
+        "files": [
+            "index.js",
+            "dataStruct.js",
+            "messageBox.js",
+            "index.html"
+        ],
+        "dirs": [
+            "fonts",
+            "img",
+            "script",
+            "style"
+        ],
+        "excludes": [
+            "script/src"
+        ]
     },
     "build": {
         "temp": "temp",
-        "clean": false,
-        "nodeModules": [],
+        "clean": true,
+        "nodeModules": [
+            "type-electron",
+            "save-tool"
+        ],
         "showTime": false,
         "showConsole": false,
         "showEntryInfo": true,
-        "icon": "favicon.ico"
+        "icon": "img/favicon.ico"
     },
     "electron": {
         "home": "./electron",
