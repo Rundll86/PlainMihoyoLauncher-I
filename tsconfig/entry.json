@@ -97,7 +97,7 @@
         /* Completeness */
         // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-        "outDir": "../script/entry"
+        "outDir": ".."
     },
-    "files":["../index.ts"]
+    "files":["../entrySrc/index.ts"]
 }
