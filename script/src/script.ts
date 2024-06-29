@@ -1,8 +1,9 @@
-const gamepanel: HTMLElement = getElementById("game-panel");
-const menulist: HTMLElement = getElementById("menu-list");
-const controlbar: HTMLElement = getElementById("control-bar");
+const gamepanel = getElementById("game-panel");
+const menulist = getElementById("menu-list");
+const controlbar = getElementById("control-bar");
 const launchNormal = getElementById("launch-normal");
 const launchAdvance = getElementById("launch-advance");
+const loginbar = getElementById("loginbar");
 declare function quit(): void;
 declare function minimize(): void;
 declare function launch(): void;
@@ -220,3 +221,18 @@ labelButtonGroup.create("controlbar", [
 labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
 launchNormal.addEventListener("click", () => launch());
+namespace loginBar {
+    export const element = getElementById("loginbar");
+    export function big() {
+        element.classList.remove("small");
+        element.classList.add("big");
+    };
+    export function small() {
+        element.classList.remove("big");
+        element.classList.add("small");
+    };
+};
+namespace titleBar {
+    export const titleSpan = getElementById("title");
+    export const menuListSpan = menulist;
+};

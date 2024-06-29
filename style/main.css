@@ -20,8 +20,17 @@
     user-select: none;
 }
 
+.use-ease-out-back {
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+}
+
 .flexbox {
     display: flex;
+}
+
+.flex-in-center {
+    justify-content: center;
+    align-items: center;
 }
 
 .flexbox.column {
@@ -87,9 +96,16 @@ body {
 }
 
 #loginbar {
-    width: 60%;
     background-color: rgb(255, 249, 237);
     box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+}
+
+#loginbar.big {
+    width: 60%;
+}
+
+#loginbar.small {
+    width: 30%;
 }
 
 #game-panel {
