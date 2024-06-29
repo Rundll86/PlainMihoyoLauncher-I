@@ -3,6 +3,8 @@ import path from "path";
 import fs from "fs";
 import child_process from "child_process";
 import * as saveTool from "save-tool";
+import { clientInfo, settingType } from "./dataStruct";
+import * as messageBox from "./messageBox";
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");
 if (saveTool.createSaveFile("pml", "clients.json")[0]) {
@@ -11,7 +13,8 @@ if (saveTool.createSaveFile("pml", "clients.json")[0]) {
 if (saveTool.createSaveFile("pml", "setting.json")[0]) {
     fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify({}), { encoding: "utf8" });
 };
-var clients: [] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
+var clients: clientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
+var settings: settingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
 app.on("ready", () => {
     const win = new BrowserWindow({
         width: 860,
@@ -32,4 +35,6 @@ app.on("ready", () => {
     ipcMain.on("launch", () => {
         child_process.spawn("D:/Star Rail/Game/StarRail.exe");
     });
+    messageBox.useRootWindow(win);
+    messageBox.showInfo("nmsl");
 });
