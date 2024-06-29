@@ -217,6 +217,6 @@ labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
     useFaSpan("close")
 ], controlbar, Colors.WHITE, -1);
-labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => minimize());
-labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => quit());
+labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
+labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
 launchNormal.addEventListener("click", () => launch());
