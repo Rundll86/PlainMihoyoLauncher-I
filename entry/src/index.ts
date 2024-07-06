@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import child_process from "child_process";
 import * as saveTool from "save-tool";
-import { clientInfo, settingType } from "./dataStruct";
+import { ClientInfo, SettingType } from "../../common/dataStruct";
 import * as messageBox from "./messageBox";
 app.on("ready", () => {
     const win = new BrowserWindow({
@@ -29,19 +29,25 @@ app.on("ready", () => {
     saveTool.makeSaveRoot();
     saveTool.makeSaveDir("pml");
     if (saveTool.createSaveFile("pml", "clients.json")[0]) {
-        let current: clientInfo[] = [];
+        let current: ClientInfo[] = [];
         fs.writeFileSync(saveTool.useSaveDir("pml", "clients.json"), JSON.stringify(current), { encoding: "utf8" });
     };
     if (saveTool.createSaveFile("pml", "setting.json")[0]) {
-        let current: settingType = {
-            games: {
+        let current: SettingType = {
+            game: {
                 sr: { currentClient: "" },
                 gi: { currentClient: "" },
                 zzz: { currentClient: "" }
+            },
+            launcher: {
+                devTool: false
             }
         };
         fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify(current), { encoding: "utf8" });
     };
-    var clients: clientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
-    var settings: settingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
+    var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
+    var settings: SettingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
+    if (settings.launcher.devTool) {
+        win.webContents.openDevTools();
+    };
 });

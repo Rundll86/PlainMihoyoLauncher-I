@@ -1,137 +1,11 @@
+import { minimize, quit, launch, getClientList } from "./contextApi";
+import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
-const menulist = getElementById("menu-list");
 const controlbar = getElementById("control-bar");
-const launchNormal = getElementById("launch-normal");
-const launchAdvance = getElementById("launch-advance");
+const launchButton = getElementById("launch");
+const selectClientButton = getElementById("select-client");
+const setupClientButton = getElementById("setup-client");
 const loginbar = getElementById("loginbar");
-declare function quit(): void;
-declare function minimize(): void;
-declare function launch(): void;
-interface H_E_T_N_M {
-    "a": HTMLAnchorElement;
-    "abbr": HTMLElement;
-    "address": HTMLElement;
-    "area": HTMLAreaElement;
-    "article": HTMLElement;
-    "aside": HTMLElement;
-    "audio": HTMLAudioElement;
-    "b": HTMLElement;
-    "base": HTMLBaseElement;
-    "bdi": HTMLElement;
-    "bdo": HTMLElement;
-    "blockquote": HTMLQuoteElement;
-    "body": HTMLBodyElement;
-    "br": HTMLBRElement;
-    "button": HTMLButtonElement;
-    "canvas": HTMLCanvasElement;
-    "caption": HTMLTableCaptionElement;
-    "cite": HTMLElement;
-    "code": HTMLElement;
-    "col": HTMLTableColElement;
-    "colgroup": HTMLTableColElement;
-    "data": HTMLDataElement;
-    "datalist": HTMLDataListElement;
-    "dd": HTMLElement;
-    "del": HTMLModElement;
-    "details": HTMLDetailsElement;
-    "dfn": HTMLElement;
-    "dialog": HTMLDialogElement;
-    "div": HTMLDivElement;
-    "dl": HTMLDListElement;
-    "dt": HTMLElement;
-    "em": HTMLElement;
-    "embed": HTMLEmbedElement;
-    "fieldset": HTMLFieldSetElement;
-    "figcaption": HTMLElement;
-    "figure": HTMLElement;
-    "footer": HTMLElement;
-    "form": HTMLFormElement;
-    "h1": HTMLHeadingElement;
-    "h2": HTMLHeadingElement;
-    "h3": HTMLHeadingElement;
-    "h4": HTMLHeadingElement;
-    "h5": HTMLHeadingElement;
-    "h6": HTMLHeadingElement;
-    "head": HTMLHeadElement;
-    "header": HTMLElement;
-    "hgroup": HTMLElement;
-    "hr": HTMLHRElement;
-    "html": HTMLHtmlElement;
-    "i": HTMLElement;
-    "iframe": HTMLIFrameElement;
-    "img": HTMLImageElement;
-    "input": HTMLInputElement;
-    "ins": HTMLModElement;
-    "kbd": HTMLElement;
-    "label": HTMLLabelElement;
-    "legend": HTMLLegendElement;
-    "li": HTMLLIElement;
-    "link": HTMLLinkElement;
-    "main": HTMLElement;
-    "map": HTMLMapElement;
-    "mark": HTMLElement;
-    "menu": HTMLMenuElement;
-    "meta": HTMLMetaElement;
-    "meter": HTMLMeterElement;
-    "nav": HTMLElement;
-    "noscript": HTMLElement;
-    "object": HTMLObjectElement;
-    "ol": HTMLOListElement;
-    "optgroup": HTMLOptGroupElement;
-    "option": HTMLOptionElement;
-    "output": HTMLOutputElement;
-    "p": HTMLParagraphElement;
-    "picture": HTMLPictureElement;
-    "pre": HTMLPreElement;
-    "progress": HTMLProgressElement;
-    "q": HTMLQuoteElement;
-    "rp": HTMLElement;
-    "rt": HTMLElement;
-    "ruby": HTMLElement;
-    "s": HTMLElement;
-    "samp": HTMLElement;
-    "script": HTMLScriptElement;
-    "search": HTMLElement;
-    "section": HTMLElement;
-    "select": HTMLSelectElement;
-    "slot": HTMLSlotElement;
-    "small": HTMLElement;
-    "source": HTMLSourceElement;
-    "span": HTMLSpanElement;
-    "strong": HTMLElement;
-    "style": HTMLStyleElement;
-    "sub": HTMLElement;
-    "summary": HTMLElement;
-    "sup": HTMLElement;
-    "table": HTMLTableElement;
-    "tbody": HTMLTableSectionElement;
-    "td": HTMLTableCellElement;
-    "template": HTMLTemplateElement;
-    "textarea": HTMLTextAreaElement;
-    "tfoot": HTMLTableSectionElement;
-    "th": HTMLTableCellElement;
-    "thead": HTMLTableSectionElement;
-    "time": HTMLTimeElement;
-    "title": HTMLTitleElement;
-    "tr": HTMLTableRowElement;
-    "track": HTMLTrackElement;
-    "u": HTMLElement;
-    "ul": HTMLUListElement;
-    "var": HTMLElement;
-    "video": HTMLVideoElement;
-    "wbr": HTMLElement;
-}
-enum Colors { ORANGE, WHITE };
-type eleTreeContext<T extends HTMLElement> = {
-    result: T,
-    classNames(...clsNames: string[]): eleTreeContext<T>,
-    attr(name: string, value: any): eleTreeContext<T>;
-    css(name: string): string;
-    css(name: string, value: string): eleTreeContext<T>;
-    get outer(): string;
-};
-type AnyObject<T = any> = { [key: string]: T };
-type ExpandObject<T> = T & { [key: string]: any; };
 function getElementById(id: string): HTMLElement {
     return document.getElementById(id) as HTMLElement;
 };
@@ -213,14 +87,13 @@ namespace labelButtonGroup {
     };
 };
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
-labelButtonGroup.create("menulist", ["[L] 启动", "[I] 安装", "[S] 设置", "[M] 更多"], menulist, Colors.WHITE);
+labelButtonGroup.create("menulist", ["[L] 启动", "[I] 安装", "[S] 设置", "[M] 更多"], titleBar.menuListSpan, Colors.WHITE);
 labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
     useFaSpan("close")
 ], controlbar, Colors.WHITE, -1);
 labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
-launchNormal.addEventListener("click", () => launch());
 namespace loginBar {
     export const element = getElementById("loginbar");
     export function big() {
@@ -234,5 +107,11 @@ namespace loginBar {
 };
 namespace titleBar {
     export const titleSpan = getElementById("title");
-    export const menuListSpan = menulist;
+    export const menuListSpan = getElementById("menu-list");
 };
+launchButton.addEventListener("click", () => launch());
+selectClientButton.addEventListener("click", () => {
+    getClientList().then(e=>{
+        console.log(e);
+    });
+});

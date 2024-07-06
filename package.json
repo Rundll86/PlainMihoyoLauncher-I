@@ -1,11 +1,11 @@
 {
-  "name": "foxlauncher",
+  "name": "plain-mihoyo-launcher",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "npm run build && eop start",
-    "build": "tsc -p tsconfig/script.json && tsc -p tsconfig/entry.json",
+    "build": "tsc -p tsconfig/entry.json",
     "dist": "eop build"
   },
   "keywords": [],
