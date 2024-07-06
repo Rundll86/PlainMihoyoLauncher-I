@@ -1,7 +1,26 @@
-import { ClientInfo } from "../../common/dataStruct";
-export declare function quit(): void;
-export declare function minimize(): void;
-export declare function launch(): void;
-export declare function randomInt(min: number, max: number): void;
-export declare function randomString(length: number, sets?:string): void;
-export declare function getClientList(): Promise<ClientInfo[]>;
+import { ClientInfo, SettingType } from "../../common/dataStruct";
+type FileFilter = { name: string, extensions: string[] };
+export function quit() {
+    window.quit();
+};
+export function minimize() {
+    window.minimize();
+};
+export function launch() {
+    window.launch();
+};
+export function reload() {
+    window.reload();
+};
+export function devtool() {
+    window.devtool();
+};
+export function getClientList(): Promise<ClientInfo[]> {
+    return window.getClientList();
+};
+export function getSettings(): Promise<SettingType> {
+    return window.getSettings();
+};
+export function selectFile(filters: FileFilter[] = []): Promise<string> {
+    return window.selectFile(filters);
+};

@@ -15,6 +15,8 @@ function randomString(length = 10, sets = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 sendApiWithoutArgs("quit");
 sendApiWithoutArgs("minimize");
 sendApiWithoutArgs("launch");
+sendApiWithoutArgs("reload");
+sendApiWithoutArgs("devtool");
 ipcRenderer.on("showInfo", (_, e) => alert(e));
 contextBridge.exposeInMainWorld("randomInt", randomInt);
 contextBridge.exposeInMainWorld("randomString", randomString);
@@ -25,7 +27,23 @@ contextBridge.exposeInMainWorld("getClientList", () => {
         ipcRenderer.on("get-client-list", (_, e) => {
             if (e.id === id) {
                 resolve(e.data);
+                ipcRenderer.removeAllListeners("get-client-list");
             };
         });
     });
+});
+contextBridge.exposeInMainWorld("getSettings", () => {
+    return new Promise((resolve) => {
+        let id = randomString();
+        ipcRenderer.send("get-settings", id);
+        ipcRenderer.on("get-settings", (_, e) => {
+            if (e.id === id) {
+                resolve(e.data);
+                ipcRenderer.removeAllListeners("get-settings");
+            };
+        });
+    });
+});
+contextBridge.exposeInMainWorld("selectFile", (filters) => {
+    return ipcRenderer.invoke("select-file", filters);
 });

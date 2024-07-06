@@ -1,22 +1,18 @@
 {
     "project": {
         "name": "Plain Mihoyo Launcher",
-        "entry": "index.js",
+        "entry": "entry/dist/entry/src/index.js",
         "files": [
-            "index.js",
-            "dataStruct.js",
-            "messageBox.js",
             "index.html"
         ],
         "dirs": [
             "fonts",
             "img",
-            "script",
-            "style"
+            "script/dist",
+            "style",
+            "entry/dist/entry/src"
         ],
-        "excludes": [
-            "script/src"
-        ]
+        "excludes": []
     },
     "build": {
         "temp": "temp",

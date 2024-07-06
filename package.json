@@ -1,20 +1,17 @@
 {
   "name": "plain-mihoyo-launcher",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "npm run build && eop start",
-    "build": "tsc -p tsconfig/entry.json",
+    "build": "tsc -p tsconfig/entry.json && webpack",
     "dist": "eop build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "electron-ofp": "^1.0.100",
     "save-tool": "^1.0.0",
     "ts-loader": "^9.5.1",
-    "type-electron": "^1.0.4"
+    "type-electron": "^1.0.4",
+    "typescript": "^5.5.3",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
   }
 }
