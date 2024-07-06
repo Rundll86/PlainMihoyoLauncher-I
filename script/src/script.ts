@@ -192,15 +192,15 @@ importClientButton.addEventListener("click", () => modal(
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFile([
             { name: "可执行文件", extensions: ["exe"] }
         ]).then(e => {
-            let input = eleTree("input").attr("placeholder", "取个名字...").classNames("wide");
+            let inputAAABBBCCC = eleTree("input").attr("placeholder", "取个名字...").classNames("wide").attr("key","abcdefg");
             modal("导入客户端", eleTree("div", [
                 eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动。"),
                 br(),
-                input
+                inputAAABBBCCC
             ]).outer, [
                 eleTree("button").listener(
                     "click",
-                    () => createClient(e, input.result.value, ClientType.StarRail).then(() => console.log(input))
+                    () => createClient(e, inputAAABBBCCC.result.value, ClientType.StarRail).then(() => console.log(inputAAABBBCCC))
                 ).attr("innerText", "确定")
             ])
         }))
