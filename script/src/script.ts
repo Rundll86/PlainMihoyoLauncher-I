@@ -1,5 +1,5 @@
 import { ClientType } from "../../common/dataStruct";
-import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile } from "./contextApi";
+import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient } from "./contextApi";
 import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
 const controlbar = getElementById("control-bar");
@@ -66,6 +66,7 @@ function modal(title: string, content: string, buttons: eleTreeContext<HTMLButto
     };
     buttons.forEach(e => {
         e.listener("click", () => closeModal());
+        e.classNames("padding-small");
     });
     let containerElement = eleTree("div", [
         eleTree("span").classNames("title").attr("innerText", title),
@@ -190,7 +191,19 @@ importClientButton.addEventListener("click", () => modal(
     [
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFile([
             { name: "可执行文件", extensions: ["exe"] }
-        ]))
+        ]).then(e => {
+            let input = eleTree("input").attr("placeholder", "取个名字...").classNames("wide");
+            modal("导入客户端", eleTree("div", [
+                eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动。"),
+                br(),
+                input
+            ]).outer, [
+                eleTree("button").listener(
+                    "click",
+                    () => createClient(e, input.result.value, ClientType.StarRail).then(() => console.log(input))
+                ).attr("innerText", "确定")
+            ])
+        }))
     ]
 ));
 loadClientButton.addEventListener("click", () => modal(

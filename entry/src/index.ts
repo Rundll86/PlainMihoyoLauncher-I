@@ -25,6 +25,10 @@ if (saveTool.createSaveFile("pml", "setting.json")[0]) {
     };
     fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify(current), { encoding: "utf8" });
 };
+function dumpConfig(c: ClientInfo[] = clients, s: SettingType = settings) {
+    fs.writeFileSync(saveTool.useSaveDir("pml", "clients.json"), JSON.stringify(c), { encoding: "utf8" });
+    fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify(s), { encoding: "utf8" });
+};
 var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
 var settings: SettingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
 app.on("ready", () => {
@@ -66,6 +70,17 @@ app.on("ready", () => {
         } else {
             return null;
         };
+    });
+    ipcMain.handle("create-client", (_, e) => {
+        let current = {
+            name: e.name,
+            version: "unknown",
+            path: e.path,
+            type: e.game
+        };
+        clients.push(current);
+        dumpConfig();
+        return current;
     });
     messageBox.useRootWindow(win);
     if (settings.launcher.devTool) {

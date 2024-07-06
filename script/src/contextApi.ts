@@ -1,4 +1,4 @@
-import { ClientInfo, SettingType } from "../../common/dataStruct";
+import { ClientInfo, ClientType, SettingType } from "../../common/dataStruct";
 type FileFilter = { name: string, extensions: string[] };
 export function quit() {
     window.quit();
@@ -23,4 +23,7 @@ export function getSettings(): Promise<SettingType> {
 };
 export function selectFile(filters: FileFilter[] = []): Promise<string> {
     return window.selectFile(filters);
+};
+export function createClient(path: string, name: string, game: ClientType): Promise<void> {
+    return window.createClient(path, name, game);
 };

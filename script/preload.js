@@ -47,3 +47,6 @@ contextBridge.exposeInMainWorld("getSettings", () => {
 contextBridge.exposeInMainWorld("selectFile", (filters) => {
     return ipcRenderer.invoke("select-file", filters);
 });
+contextBridge.exposeInMainWorld("createClient", (path, name, game) => {
+    return ipcRenderer.invoke("create-client", { path, name, game });
+});

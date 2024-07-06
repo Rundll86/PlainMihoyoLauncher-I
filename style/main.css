@@ -340,3 +340,19 @@ span.gray {
 .modal .container .buttons {
     text-align: right;
 }
+
+input {
+    border: rgb(255, 235, 197) 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(255, 249, 237);
+    margin: 5px;
+}
+
+input::placeholder {
+    color: rgb(255, 226, 171);
+}
+
+input.wide {
+    width: 100%;
+}
