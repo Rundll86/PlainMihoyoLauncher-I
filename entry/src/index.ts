@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from "type-electron";
-import { ClientInfo, SettingType } from "../../common/dataStruct";
+import { ClientConfigFile, ClientInfo, ClientStatus, ClientType, SettingType } from "../../common/dataStruct";
 import * as saveTool from "save-tool";
 import * as messageBox from "./messageBox";
 import path from "path";
@@ -28,6 +28,19 @@ if (saveTool.createSaveFile("pml", "setting.json")[0]) {
 function dumpConfig(c: ClientInfo[] = clients, s: SettingType = settings) {
     fs.writeFileSync(saveTool.useSaveDir("pml", "clients.json"), JSON.stringify(c), { encoding: "utf8" });
     fs.writeFileSync(saveTool.useSaveDir("pml", "setting.json"), JSON.stringify(s), { encoding: "utf8" });
+};
+function deleteFolderRecursive(folderPath: string) {
+    if (fs.existsSync(folderPath)) {
+        fs.readdirSync(folderPath).forEach((file) => {
+            const currentPath = path.join(folderPath, file);
+            if (fs.lstatSync(currentPath).isDirectory()) {
+                deleteFolderRecursive(currentPath);
+            } else {
+                fs.unlinkSync(currentPath);
+            };
+        });
+        fs.rmdirSync(folderPath);
+    };
 };
 var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
 var settings: SettingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
@@ -71,16 +84,67 @@ app.on("ready", () => {
             return null;
         };
     });
-    ipcMain.handle("create-client", (_, e) => {
-        let current = {
+    ipcMain.handle("select-folder", (_, e) => {
+        let result = dialog.showOpenDialogSync({
+            properties: ["openDirectory"]
+        });
+        if (result) {
+            return result[0];
+        } else {
+            return null;
+        };
+    });
+    ipcMain.handle("create-client", (_, e): ClientStatus => {
+        let configPath = path.join(path.dirname(e.path), ".pml-client");
+        if (fs.existsSync(configPath)) {
+            let status = fs.statSync(configPath);
+            if (status.isDirectory()) {
+                deleteFolderRecursive(configPath);
+            } else {
+                fs.rmSync(configPath);
+            };
+        };
+        fs.mkdirSync(configPath);
+        let gameConfig: ClientConfigFile = {
+            path: e.path,
+            plugins: [],
             name: e.name,
             version: "unknown",
-            path: e.path,
-            type: e.game
+            type: ClientType.StarRail
+        };
+        fs.writeFileSync(path.join(configPath, "client.json"), JSON.stringify(gameConfig), { encoding: "utf8" });
+        let current = {
+            name: gameConfig.name,
+            version: gameConfig.version,
+            path: configPath,
+            type: gameConfig.type,
+            game: e.path
         };
         clients.push(current);
         dumpConfig();
-        return current;
+        return { status: true, message: "" };
+    });
+    ipcMain.handle("load-client", (_, e): ClientStatus => {
+        let clientConfigPath = path.join(e, ".pml-client");
+        if (fs.existsSync(clientConfigPath)) {
+            try {
+                let clientConfig: ClientConfigFile = JSON.parse(fs.readFileSync(path.join(clientConfigPath, "client.json")).toString());
+                let current: ClientInfo = {
+                    name: clientConfig.name,
+                    version: clientConfig.version,
+                    path: clientConfigPath,
+                    type: clientConfig.type,
+                    game: clientConfig.path
+                };
+                clients.push(current);
+                dumpConfig();
+                return { status: true, message: "" };
+            } catch (e) {
+                return { status: false, message: `客户端没有有效的配置文件。${e}` };
+            };
+        } else {
+            return { status: false, message: "这不是一个有效的PML客户端。" };
+        };
     });
     messageBox.useRootWindow(win);
     if (settings.launcher.devTool) {

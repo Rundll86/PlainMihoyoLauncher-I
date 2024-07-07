@@ -1,20 +1,32 @@
 export enum ClientType { GenshinImpact, StarRail, ZenlessZoneZero };
-export type GameInfo = {
+export interface GameInfo {
     currentClient: string;
 };
-export type ClientInfo = {
+export interface ClientInfo {
     name: string;
     version: string;
     path: string;
     type: ClientType;
+    game: string;
 };
-export type SettingType = {
+export interface ClientConfigFile {
+    path: string;
+    plugins: string[];
+    name: string;
+    version: string;
+    type: ClientType;
+}
+export interface SettingType {
     game: {
-        sr: GameInfo,
-        gi: GameInfo,
-        zzz: GameInfo
-    },
+        sr: GameInfo;
+        gi: GameInfo;
+        zzz: GameInfo;
+    };
     launcher: {
-        devTool: false
-    }
+        devTool: false;
+    };
+};
+export interface ClientStatus {
+    status: boolean;
+    message: string;
 };

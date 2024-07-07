@@ -47,6 +47,12 @@ contextBridge.exposeInMainWorld("getSettings", () => {
 contextBridge.exposeInMainWorld("selectFile", (filters) => {
     return ipcRenderer.invoke("select-file", filters);
 });
+contextBridge.exposeInMainWorld("selectFolder", (filters) => {
+    return ipcRenderer.invoke("select-folder", filters);
+});
 contextBridge.exposeInMainWorld("createClient", (path, name, game) => {
     return ipcRenderer.invoke("create-client", { path, name, game });
+});
+contextBridge.exposeInMainWorld("loadClient", (path) => {
+    return ipcRenderer.invoke("load-client", path);
 });

@@ -1,5 +1,5 @@
 import { ClientType } from "../../common/dataStruct";
-import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient } from "./contextApi";
+import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient } from "./contextApi";
 import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
 const controlbar = getElementById("control-bar");
@@ -10,8 +10,8 @@ const clientMenu = getElementById("client-menu");
 const clientList = getElementById("client-list");
 const importClientButton = getElementById("import-client");
 const loadClientButton = getElementById("load-client");
-function getElementById(id: string): HTMLElement {
-    return document.getElementById(id) as HTMLElement;
+function getElementById<T extends HTMLElement = HTMLElement>(id: string): T {
+    return document.getElementById(id) as T;
 };
 function eleTree<T extends keyof H_E_T_N_M>(tag: T & string, childs: eleTreeContext<HTMLElement>[] = []): eleTreeContext<H_E_T_N_M[T]> {
     let result: ExpandObject<HTMLElement> = document.createElement(tag);
@@ -179,7 +179,7 @@ selectClientButton.addEventListener("click", () => {
             ).attr("innerText", e.name).child(
                 [
                     br().result,
-                    eleTree("span").classNames("gray", "small").attr("innerText", e.path).result
+                    eleTree("span").classNames("gray", "small").attr("innerText", e.game).result
                 ]
             ).result) : null;
         });
@@ -192,15 +192,15 @@ importClientButton.addEventListener("click", () => modal(
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFile([
             { name: "可执行文件", extensions: ["exe"] }
         ]).then(e => {
-            let inputAAABBBCCC = eleTree("input").attr("placeholder", "取个名字...").classNames("wide").attr("key","abcdefg");
+            let input = eleTree("input").attr("placeholder", "取个名字...").classNames("wide").attr("id", "client-name");
             modal("导入客户端", eleTree("div", [
                 eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动。"),
                 br(),
-                inputAAABBBCCC
+                input
             ]).outer, [
                 eleTree("button").listener(
                     "click",
-                    () => createClient(e, inputAAABBBCCC.result.value, ClientType.StarRail).then(() => console.log(inputAAABBBCCC))
+                    () => createClient(e, getElementById<HTMLInputElement>("client-name").value, ClientType.StarRail).then(() => { })
                 ).attr("innerText", "确定")
             ])
         }))
@@ -208,11 +208,15 @@ importClientButton.addEventListener("click", () => modal(
 ));
 loadClientButton.addEventListener("click", () => modal(
     "提示",
-    "接下来请找到你的游戏客户端目录，选择其中的一个文件名类似pm-client的json文件",
+    "接下来请找到你的自定义客户端的目录。其应包含一个名为.pml-client的文件夹。",
     [
-        eleTree("button").attr("innerText", "了解").listener("click", () => selectFile([
-            { name: "客户端配置文件", extensions: ["json"] }
-        ]))
+        eleTree("button").attr("innerText", "了解").listener("click", () => selectFolder().then(e => {
+            loadClient(e).then(e => {
+                if (!e.status) {
+                    console.log(e.message);
+                };
+            });
+        }))
     ]
 ));
 titleBar.returnBtn.addEventListener("click", () => {
