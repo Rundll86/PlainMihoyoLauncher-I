@@ -24,5 +24,5 @@ export interface SettingType {
 };
 export interface ClientStatus {
     status: boolean;
-    message: string;
+    message: any;
 };

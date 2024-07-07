@@ -1,4 +1,4 @@
-import { ClientType } from "../../common/dataStruct";
+import { ClientType, SettingType } from "../../common/dataStruct";
 import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient } from "./contextApi";
 import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
@@ -10,6 +10,25 @@ const clientMenu = getElementById("client-menu");
 const clientList = getElementById("client-list");
 const importClientButton = getElementById("import-client");
 const loadClientButton = getElementById("load-client");
+var settings: SettingType = {
+    game: {
+        gi: {
+            currentClient: ""
+        },
+        sr: {
+            currentClient: ""
+        },
+        zzz: {
+            currentClient: ""
+        }
+    },
+    launcher: {
+        devTool: false
+    }
+};
+getSettings().then(e => {
+    settings = e;
+});
 function getElementById<T extends HTMLElement = HTMLElement>(id: string): T {
     return document.getElementById(id) as T;
 };
@@ -86,6 +105,29 @@ function modal(title: string, content: string, buttons: eleTreeContext<HTMLButto
         close: closeModal
     };
 };
+function createClientElement(name: string, path: string) {
+    let { result } = eleTree("span").classNames(
+        "option",
+        settings.game.sr.currentClient === name ? "selected" : ""
+    ).attr("innerText", name).child(
+        [
+            br().result,
+            eleTree("span").classNames("gray", "small").attr("innerText", path).result
+        ]
+    ).css("opacity", "0").css("marginLeft", "-100px");
+    clientList.appendChild(result);
+    setTimeout(() => {
+        result.style.opacity = "1";
+        result.style.marginLeft = "0";
+    }, 100);
+    return new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 100);
+    });
+}
+function createClientElementQuery(query: { name: string, path: string }[], index: number) {
+    if (index >= query.length) return;
+    createClientElement(query[index].name, query[index].path).then(() => createClientElementQuery(query, index + 1));
+}
 namespace loginBar {
     export const element = getElementById("loginbar");
     export const launchMenu = getElementById("launch-menu");
@@ -159,7 +201,7 @@ labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { m
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
 launchButton.addEventListener("click", () => launch());
 selectClientButton.addEventListener("click", () => {
-    getSettings().then(settings => getClientList().then(e => {
+    getClientList().then(e => {
         loginBar.launchMenu.addEventListener("transitionend", () => {
             loginBar.small();
         }, { once: true });
@@ -172,18 +214,8 @@ selectClientButton.addEventListener("click", () => {
         clientMenu.style.left = "0";
         clientMenu.style.opacity = "1";
         clientList.innerHTML = "";
-        e.forEach(e => {
-            e.type === ClientType.StarRail ? clientList.appendChild(eleTree("span").classNames(
-                "option",
-                settings.game.sr.currentClient === e.name ? "selected" : ""
-            ).attr("innerText", e.name).child(
-                [
-                    br().result,
-                    eleTree("span").classNames("gray", "small").attr("innerText", e.path).result
-                ]
-            ).result) : null;
-        });
-    }));
+        createClientElementQuery(e, 0);
+    });
 });
 importClientButton.addEventListener("click", () => modal(
     "提示",
@@ -194,13 +226,22 @@ importClientButton.addEventListener("click", () => modal(
         ]).then(e => {
             let input = eleTree("input").attr("placeholder", "取个名字...").classNames("wide").attr("id", "client-name");
             modal("导入客户端", eleTree("div", [
-                eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动。"),
+                eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动"),
                 br(),
                 input
             ]).outer, [
                 eleTree("button").listener(
                     "click",
-                    () => createClient(e, getElementById<HTMLInputElement>("client-name").value, ClientType.StarRail).then(() => { })
+                    () => {
+                        let input = getElementById<HTMLInputElement>("client-name");
+                        createClient(e, input.value, ClientType.StarRail).then((e) => {
+                            if (e.status) {
+                                createClientElement(input.value, e.message);
+                            } else {
+                                modal("失败", e.message);
+                            };
+                        });
+                    }
                 ).attr("innerText", "确定")
             ])
         }))
@@ -212,8 +253,10 @@ loadClientButton.addEventListener("click", () => modal(
     [
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFolder().then(e => {
             loadClient(e).then(e => {
-                if (!e.status) {
-                    console.log(e.message);
+                if (e.status) {
+                    createClientElement(e.message.name, e.message.path);
+                } else {
+                    modal("失败", e.message);
                 };
             });
         }))

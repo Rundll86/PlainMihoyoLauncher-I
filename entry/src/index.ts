@@ -48,6 +48,13 @@ function deleteFolderRecursive(folderPath: string) {
         fs.rmdirSync(folderPath);
     };
 };
+function getClientList() {
+    let result: ClientConfigFile[] = [];
+    clients.forEach((e) => {
+        result.push(JSON.parse(fs.readFileSync(path.join(e.path, "client.json")).toString()));
+    })
+    return result;
+}
 var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
 var settings: SettingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
 logger.info("配置文件解析完成");
@@ -71,12 +78,19 @@ app.on("ready", () => {
     ipcMain.on("quit", () => { app.quit(); logger.warning("用户退出"); });
     ipcMain.on("minimize", () => { win.minimize(); logger.warning("用户最小化") });
     ipcMain.on("reload", () => { win.webContents.reload(); logger.warning("用户重载窗口"); });
-    ipcMain.on("devtool", () => { win.webContents.toggleDevTools(); logger.warning("用户打开开发者工具"); });
+    ipcMain.on("devtool", () => {
+        if (settings.launcher.devTool) {
+            win.webContents.toggleDevTools();
+            logger.warning("用户滚动开发者工具");
+        } else {
+            logger.error("用户尝试调用开发者工具，但开发者工具被禁用");
+        };
+    });
     ipcMain.on("launch", () => {
         logger.info("正在启动游戏");
     });
     ipcMain.on("get-client-list", (_, e) => {
-        win.webContents.send("get-client-list", { id: e, data: clients });
+        win.webContents.send("get-client-list", { id: e, data: getClientList() });
         logger.info("正在获取客户端列表");
     });
     ipcMain.on("get-settings", (_, e) => {
@@ -109,6 +123,16 @@ app.on("ready", () => {
     ipcMain.handle("create-client", (_, e): ClientStatus => {
         logger.warning("正在转换原版客户端到PML客户端");
         let configPath = path.join(path.dirname(e.path), ".pml-client");
+        let haveSameClient = false;
+        getClientList().forEach(f => {
+            if (path.normalize(path.join(path.dirname(f.path), ".pml-client")) === path.normalize(configPath)) {
+                logger.error(`用户尝试创建一个已存在的客户端：${e.path}`);
+                haveSameClient = true;
+            };
+        });
+        if (haveSameClient) {
+            return { status: false, message: "该客户端已存在" };
+        };
         if (fs.existsSync(configPath)) {
             let status = fs.statSync(configPath);
             if (status.isDirectory()) {
@@ -127,38 +151,46 @@ app.on("ready", () => {
             type: ClientType.StarRail
         };
         fs.writeFileSync(path.join(configPath, "client.json"), JSON.stringify(gameConfig), { encoding: "utf8" });
-        logger.info("成功写入配置文件");
+        logger.info("转换成功");
         let current: ClientInfo = {
             path: configPath
         };
         clients.push(current);
         dumpConfig();
-        return { status: true, message: "" };
+        return { status: true, message: e.path };
     });
     ipcMain.handle("load-client", (_, e): ClientStatus => {
         logger.warning("正在加载PML客户端");
         let clientConfigPath = path.join(e, ".pml-client");
+        let haveSameClient = false;
+        getClientList().forEach(f => {
+            if (path.normalize(path.join(path.dirname(f.path), ".pml-client")) === path.normalize(clientConfigPath)) {
+                logger.error(`用户尝试加载一个已存在的客户端：${path.join(e, "StarRail.exe")}`);
+                haveSameClient = true;
+            };
+        });
+        if (haveSameClient) {
+            return { status: false, message: "该客户端已存在" };
+        };
         try {
+            logger.info("正在读取配置文件");
             let clientConfig: ClientConfigFile = JSON.parse(fs.readFileSync(path.join(clientConfigPath, "client.json")).toString());
-            clientConfig.name.toString();
-            clientConfig.path.toString();
-            clientConfig.plugins.toString();
-            clientConfig.type.toString();
-            clientConfig.version.toString();
+            logger.info("正在验证配置文件完整性");
+            logger.info(`客户端名称有效：${clientConfig.name.toString()}`);
+            logger.info(`客户端路径有效：${clientConfig.path.toString()}`);
+            logger.info(`客户端插件列表有效：${clientConfig.plugins.toString()}`);
+            logger.info(`客户端类型有效：${clientConfig.type.toString()}`);
+            logger.info(`客户端版本有效：${clientConfig.version.toString()}`);
             let current: ClientInfo = {
                 path: clientConfigPath
             };
             clients.push(current);
             dumpConfig();
-            return { status: true, message: "" };
+            return { status: true, message: clientConfig };
         } catch (e) {
             logger.error(e);
             return { status: false, message: `这不是一个有效的PML客户端。错误：${e}` };
         };
     });
     messageBox.useRootWindow(win);
-    if (settings.launcher.devTool) {
-        win.webContents.openDevTools();
-        logger.info("已通过配置文件打开开发者工具");
-    };
 });
