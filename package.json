@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "electron-ofp": "^1.0.100",
-    "save-tool": "^1.0.0",
+    "save-tool": "^1.0.3",
     "ts-loader": "^9.5.1",
     "type-electron": "^1.0.4",
     "typescript": "^5.5.3",
