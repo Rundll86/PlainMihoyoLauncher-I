@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "electron-ofp": "^1.0.100",
+    "iconv-lite": "^0.6.3",
     "save-tool": "^1.0.3",
     "ts-loader": "^9.5.1",
     "type-electron": "^1.0.4",

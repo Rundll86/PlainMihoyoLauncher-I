@@ -1,4 +1,4 @@
-import { ClientInfo, ClientStatus, ClientType, SettingType } from "../../common/dataStruct";
+import { ClientConfigFile, ClientStatus, ClientType, SettingType } from "../../common/dataStruct";
 type FileFilter = { name: string, extensions: string[] };
 export function quit() {
     window.quit();
@@ -15,7 +15,7 @@ export function reload() {
 export function devtool() {
     window.devtool();
 };
-export function getClientList(): Promise<ClientInfo[]> {
+export function getClientList(): Promise<ClientConfigFile[]> {
     return window.getClientList();
 };
 export function getSettings(): Promise<SettingType> {

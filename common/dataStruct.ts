@@ -3,11 +3,7 @@ export interface GameInfo {
     currentClient: string;
 };
 export interface ClientInfo {
-    name: string;
-    version: string;
     path: string;
-    type: ClientType;
-    game: string;
 };
 export interface ClientConfigFile {
     path: string;

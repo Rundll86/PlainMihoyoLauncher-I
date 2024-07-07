@@ -179,7 +179,7 @@ selectClientButton.addEventListener("click", () => {
             ).attr("innerText", e.name).child(
                 [
                     br().result,
-                    eleTree("span").classNames("gray", "small").attr("innerText", e.game).result
+                    eleTree("span").classNames("gray", "small").attr("innerText", e.path).result
                 ]
             ).result) : null;
         });
