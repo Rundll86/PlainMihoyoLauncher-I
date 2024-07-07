@@ -55,4 +55,4 @@ contextBridge.exposeInMainWorld("createClient", (path, name, game) => {
 });
 contextBridge.exposeInMainWorld("loadClient", (path) => {
     return ipcRenderer.invoke("load-client", path);
-});
+}); 
