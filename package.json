@@ -3,7 +3,8 @@
   "scripts": {
     "test": "npm run build && eop start",
     "build": "tsc -p tsconfig/entry.json && webpack",
-    "dist": "eop build"
+    "dist": "eop build",
+    "start": "eop start"
   },
   "dependencies": {
     "electron-ofp": "^1.0.100",

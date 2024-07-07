@@ -17,3 +17,23 @@
 某 **远古时期** 的 **没有男角色** 的 `格斗游戏` 暂时没有适配，由于网上这些资源实在太少了。
 
 开发进度：10%
+
+**运行（方式A）**
+```plain
+npm install
+npm run build
+npm start
+```
+
+**运行（方式B）**
+```plain
+npm install
+npm test
+```
+
+**编译**
+```plain
+npm install
+npm run build
+npm run dist
+```
