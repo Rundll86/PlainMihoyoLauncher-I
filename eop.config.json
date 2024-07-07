@@ -10,7 +10,7 @@
             "img",
             "script/dist",
             "style",
-            "entry/dist/entry/src",
+            "entry/dist",
             "common"
         ],
         "excludes": []
