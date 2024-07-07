@@ -3,5 +3,5 @@ electron
 index.js
 dataStruct.js
 messageBox.js
-script/dist
 dist
+build
