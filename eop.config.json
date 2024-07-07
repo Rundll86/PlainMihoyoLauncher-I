@@ -8,12 +8,14 @@
         "dirs": [
             "fonts",
             "img",
-            "script/dist",
+            "script",
             "style",
             "entry/dist",
             "common"
         ],
-        "excludes": []
+        "excludes": [
+            "script/src"
+        ]
     },
     "build": {
         "temp": "temp",
