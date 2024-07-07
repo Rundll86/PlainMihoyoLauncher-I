@@ -31,7 +31,8 @@ export namespace logger {
     };
     export function draw(index: number = -1) {
         if (index < 0) {
-            process.stdout.write('\x1B[2J\x1B[0f');
+            //清除控制台内容
+            process.stdout.write('\u001b[2J\u001b[0;0H');
             for (let i in _logs) {
                 draw(parseInt(i));
             };

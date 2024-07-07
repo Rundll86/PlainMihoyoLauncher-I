@@ -1,10 +1,10 @@
 {
   "name": "plain-mihoyo-launcher",
   "scripts": {
-    "test": "npm run build && eop start",
+    "test": "npm run build && npm start",
     "build": "tsc -p tsconfig/entry.json && webpack",
     "dist": "eop build",
-    "start": "eop start"
+    "start": "chcp 65001 && eop start"
   },
   "dependencies": {
     "electron-ofp": "^1.0.100",
