@@ -1,20 +1,20 @@
 # Plain Mihoyo Launcher!!!
-The Launcher's imitating[ÁúÌÚÃ¨Ô¾](https://afdian.net/a/LTCat)'s [Plain Craft Launcher](https://afdian.net/p/0164034c016c11ebafcb52540025c377).Just for fun.  
-what it works for£º
+The Launcher's imitating[é¾™è…¾çŒ«è·ƒ](https://afdian.net/a/LTCat)'s [Plain Craft Launcher](https://afdian.net/p/0164034c016c11ebafcb52540025c377).Just for fun.  
+what it works forï¼š
 - Just start the game 
-- Inject custom model to local client£¨Model will not cause account-losing£©
-- Proxy network to your own server£¨need an IP£©
+- Inject custom model to local clientï¼ˆModel will not cause account-losingï¼‰
+- Proxy network to your own serverï¼ˆneed an IPï¼‰
 - Get game server and Custom Model online
 - Get the previous versions of the game from official channels
 - Get crash logs , compass and more stuff for games
 - Log in to Mihoyo to get news
 
-What game we support now£º
+What game we support nowï¼š
 - Genshin Impact
 - Honkai: StarRail
 - Zenless Zone Zero
 
-a**pre-history time** <u>_**no male characters**_</u>  `combat game` no supporting, because<s>**we can't find it**</s>ÁË¡£
+a**pre-history time** <u>_**no male characters**_</u>  `combat game` no supporting, because<s>**we can't find it**</s>ã€‚
 
 Progress of development[ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
 
@@ -23,14 +23,14 @@ Todo-list
 - Game starting
 - Plug-in loader
 - - official plug-in
-- - - FoxProxy£¨Proxy network£©
-- - - ModelInjector£¨Load customize models£©
+- - - FoxProxyï¼ˆProxy networkï¼‰
+- - - ModelInjectorï¼ˆLoad customize modelsï¼‰
 - - Customize plug-in
-- - - Support languages£º`JavaScript` `TypeScript`
+- - - Support languagesï¼š`JavaScript` `TypeScript`
 - Resource-downloading page
 - - local client of games
-- - Customize models£¨Mods£©
+- - Customize modelsï¼ˆModsï¼‰
 - - On line servers in time 
 - Mihoyo log-in check
-- °Ù±¦Ïä
-- **COMING SOON¡¤¡¤¡¤**
+- More functions incoming
+- **COMING SOONÂ·Â·Â·**
