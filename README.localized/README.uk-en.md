@@ -19,7 +19,7 @@ a **pre-history time** `combat game` without <u>_**Male characters**_</u> no sup
 Progress of development [ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
 
 Todo-list
-- Classify & manage local client
+- <s>*Classify & manage local client*</s>
 - Game starting
 - Plug-in loader
 - - official plug-in
