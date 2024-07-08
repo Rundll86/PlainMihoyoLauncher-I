@@ -33,4 +33,4 @@ Todo-list
 - - 当前在线的私服
 - 米哈游登录验证
 - 百宝箱
-- Coming soon...
+- **COMING SOON···**
