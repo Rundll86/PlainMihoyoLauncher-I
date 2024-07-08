@@ -5,7 +5,7 @@ import * as saveTool from "save-tool";
 import * as messageBox from "./messageBox";
 import path from "path";
 import fs from "fs";
-import child_process from "child_process";
+logger.startHandleStdout();
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");
