@@ -1,5 +1,5 @@
 # Plain Mihoyo Launcher!!!
-The Launcher's imitating[龙腾猫跃](https://afdian.net/a/LTCat)'s [Plain Craft Launcher](https://afdian.net/p/0164034c016c11ebafcb52540025c377).Just for fun.  
+The Launcher's imitating[LT-Cat](https://afdian.net/a/LTCat)'s [Plain Craft Launcher](https://afdian.net/p/0164034c016c11ebafcb52540025c377).Just for fun.  
 what it works for：
 - Just start the game 
 - Inject custom model to local client（Model will not cause account-losing）
@@ -14,9 +14,9 @@ What game we support now：
 - Honkai: StarRail
 - Zenless Zone Zero
 
-a**pre-history time** <u>_**no male characters**_</u>  `combat game` no supporting, because<s>**we can't find it**</s>。
+a **pre-history time** `combat game` without <u>_**Male characters**_</u> no supporting, because <s>**we can't find it**</s>.
 
-Progress of development[ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
+Progress of development [ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
 
 Todo-list
 - Classify & manage local client

@@ -279,13 +279,13 @@ span.gray {
     left: 0px;
     top: 0;
     width: 5px;
-    height: 100%;
-    background-color: transparent;
+    height: 0%;
+    background-color: orange;
     border: none;
 }
 
 .selector .option.selected::before {
-    background-color: orange;
+    height: 100%;
 }
 
 .selector .option:hover {
@@ -355,4 +355,16 @@ input::placeholder {
 
 input.wide {
     width: 100%;
+}
+
+span.label {
+    background-color: orange;
+    border-radius: 5px;
+    padding: 3px 5px;
+    color: white;
+    margin-left: 5px;
+}
+
+#launch {
+    height: fit-content;
 }

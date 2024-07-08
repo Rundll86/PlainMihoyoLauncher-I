@@ -5,7 +5,6 @@ import * as saveTool from "save-tool";
 import * as messageBox from "./messageBox";
 import path from "path";
 import fs from "fs";
-logger.startHandleStdout();
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");
@@ -19,9 +18,18 @@ if (saveTool.createSaveFile("pml", "setting.json")[0]) {
     logger.info("未找到设置信息，正在创建");
     let current: SettingType = {
         game: {
-            sr: { currentClient: "" },
-            gi: { currentClient: "" },
-            zzz: { currentClient: "" }
+            YuanShen: {
+                currentClient: "未选择客户端",
+                label: "原神"
+            },
+            StarRail: {
+                currentClient: "未选择客户端",
+                label: "崩坏：星穹铁道"
+            },
+            ZenlessZoneZero: {
+                currentClient: "未选择客户端",
+                label: "绝区零"
+            }
         },
         launcher: {
             devTool: false
@@ -97,6 +105,11 @@ app.on("ready", () => {
         win.webContents.send("get-settings", { id: e, data: settings });
         logger.info("正在获取设置");
     });
+    ipcMain.on("save-settings", (_, e) => {
+        logger.warning("正在保存设置");
+        settings = e;
+        dumpConfig();
+    });
     ipcMain.handle("select-file", (_, e) => {
         logger.info("打开了文件选择框");
         let result = dialog.showOpenDialogSync({
@@ -126,7 +139,7 @@ app.on("ready", () => {
         let haveSameClient = false;
         getClientList().forEach(f => {
             if (path.normalize(path.join(path.dirname(f.path), ".pml-client")) === path.normalize(configPath)) {
-                logger.error(`用户尝试创建一个已存在的客户端：${e.path}`);
+                logger.error(`用户尝试创建一个已存在的原版客户端：${e.path}`);
                 haveSameClient = true;
             };
         });
@@ -148,7 +161,7 @@ app.on("ready", () => {
             plugins: [],
             name: e.name,
             version: "unknown",
-            type: ClientType.StarRail
+            type: e.game
         };
         fs.writeFileSync(path.join(configPath, "client.json"), JSON.stringify(gameConfig), { encoding: "utf8" });
         logger.info("转换成功");
@@ -161,11 +174,11 @@ app.on("ready", () => {
     });
     ipcMain.handle("load-client", (_, e): ClientStatus => {
         logger.warning("正在加载PML客户端");
-        let clientConfigPath = path.join(e, ".pml-client");
+        let clientConfigPath = path.join(e.path, ".pml-client");
         let haveSameClient = false;
         getClientList().forEach(f => {
             if (path.normalize(path.join(path.dirname(f.path), ".pml-client")) === path.normalize(clientConfigPath)) {
-                logger.error(`用户尝试加载一个已存在的客户端：${path.join(e, "StarRail.exe")}`);
+                logger.error(`用户尝试加载一个已存在的PML客户端：${path.join(e.path, `${e.game}.exe`)}`);
                 haveSameClient = true;
             };
         });

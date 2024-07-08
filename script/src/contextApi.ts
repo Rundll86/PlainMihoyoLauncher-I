@@ -21,6 +21,9 @@ export function getClientList(): Promise<ClientConfigFile[]> {
 export function getSettings(): Promise<SettingType> {
     return window.getSettings();
 };
+export function saveSettings(settings: SettingType) {
+    return window.saveSettings(settings);
+}
 export function selectFile(filters: FileFilter[] = []): Promise<string> {
     return window.selectFile(filters);
 };
@@ -30,6 +33,6 @@ export function selectFolder(): Promise<string> {
 export function createClient(path: string, name: string, game: ClientType): Promise<ClientStatus> {
     return window.createClient(path, name, game);
 };
-export function loadClient(path: string): Promise<ClientStatus> {
-    return window.loadClient(path);
+export function loadClient(path: string, game: ClientType): Promise<ClientStatus> {
+    return window.loadClient(path, game);
 };

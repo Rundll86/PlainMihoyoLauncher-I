@@ -1,6 +1,7 @@
-export enum ClientType { GenshinImpact, StarRail, ZenlessZoneZero };
+export enum ClientType { GenshinImpact = "YuanShen", StarRail = "StarRail", ZenlessZoneZero = "ZenlessZoneZero" };
 export interface GameInfo {
     currentClient: string;
+    label: string;
 };
 export interface ClientInfo {
     path: string;
@@ -14,9 +15,9 @@ export interface ClientConfigFile {
 }
 export interface SettingType {
     game: {
-        sr: GameInfo;
-        gi: GameInfo;
-        zzz: GameInfo;
+        YuanShen: GameInfo;
+        StarRail: GameInfo;
+        ZenlessZoneZero: GameInfo;
     };
     launcher: {
         devTool: false;

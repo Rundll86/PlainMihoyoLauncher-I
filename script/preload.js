@@ -44,6 +44,9 @@ contextBridge.exposeInMainWorld("getSettings", () => {
         });
     });
 });
+contextBridge.exposeInMainWorld("saveSettings", (settings) => {
+    return ipcRenderer.send("save-settings", settings);
+})
 contextBridge.exposeInMainWorld("selectFile", (filters) => {
     return ipcRenderer.invoke("select-file", filters);
 });
@@ -53,6 +56,6 @@ contextBridge.exposeInMainWorld("selectFolder", (filters) => {
 contextBridge.exposeInMainWorld("createClient", (path, name, game) => {
     return ipcRenderer.invoke("create-client", { path, name, game });
 });
-contextBridge.exposeInMainWorld("loadClient", (path) => {
-    return ipcRenderer.invoke("load-client", path);
+contextBridge.exposeInMainWorld("loadClient", (path, game) => {
+    return ipcRenderer.invoke("load-client", { path, game });
 }); 

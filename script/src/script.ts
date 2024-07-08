@@ -1,5 +1,5 @@
 import { ClientType, SettingType } from "../../common/dataStruct";
-import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient } from "./contextApi";
+import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient, saveSettings } from "./contextApi";
 import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
 const controlbar = getElementById("control-bar");
@@ -10,16 +10,21 @@ const clientMenu = getElementById("client-menu");
 const clientList = getElementById("client-list");
 const importClientButton = getElementById("import-client");
 const loadClientButton = getElementById("load-client");
+const clientNameSpan = getElementById("client-name");
+var currentGame = ClientType.GenshinImpact;
 var settings: SettingType = {
     game: {
-        gi: {
-            currentClient: ""
+        YuanShen: {
+            currentClient: "",
+            label: "原神"
         },
-        sr: {
-            currentClient: ""
+        StarRail: {
+            currentClient: "",
+            label: "星穹铁道"
         },
-        zzz: {
-            currentClient: ""
+        ZenlessZoneZero: {
+            currentClient: "",
+            label: "绝区零"
         }
     },
     launcher: {
@@ -28,6 +33,7 @@ var settings: SettingType = {
 };
 getSettings().then(e => {
     settings = e;
+    reloadClientNameSpan();
 });
 function getElementById<T extends HTMLElement = HTMLElement>(id: string): T {
     return document.getElementById(id) as T;
@@ -105,17 +111,36 @@ function modal(title: string, content: string, buttons: eleTreeContext<HTMLButto
         close: closeModal
     };
 };
-function createClientElement(name: string, path: string) {
+function reloadAllClientOption() {
+    document.querySelectorAll("span.option.client-option").forEach(e => {
+        if (e.querySelector(".name")?.innerHTML === settings.game[currentGame].currentClient) {
+            e.classList.add("selected");
+        } else {
+            e.classList.remove("selected");
+        };
+    });
+};
+function reloadClientNameSpan() {
+    clientNameSpan.innerText = settings.game[currentGame].currentClient;
+}
+function createClientElement(name: string, path: string, game: ClientType) {
     let { result } = eleTree("span").classNames(
         "option",
-        settings.game.sr.currentClient === name ? "selected" : ""
-    ).attr("innerText", name).child(
-        [
-            br().result,
-            eleTree("span").classNames("gray", "small").attr("innerText", path).result
-        ]
-    ).css("opacity", "0").css("marginLeft", "-100px");
+        "client-option"
+    ).child([
+        eleTree("span").attr("innerText", name).classNames("name", "color-inherit").result
+    ]).child([
+        eleTree("span").classNames("label").attr("innerText", settings.game[game as ClientType].label).result
+    ]).child([
+        br().result,
+        eleTree("span").classNames("gray", "small").attr("innerText", path).result
+    ]).css("opacity", "0").css("marginLeft", "-100px").listener("click", () => {
+        settings.game[currentGame].currentClient = name;
+        saveSettings(settings);
+        reloadAllClientOption();
+    });
     clientList.appendChild(result);
+    reloadAllClientOption();
     setTimeout(() => {
         result.style.opacity = "1";
         result.style.marginLeft = "0";
@@ -123,11 +148,11 @@ function createClientElement(name: string, path: string) {
     return new Promise<void>((resolve) => {
         setTimeout(() => resolve(), 100);
     });
-}
-function createClientElementQuery(query: { name: string, path: string }[], index: number) {
+};
+function createClientElementQuery(query: { name: string, path: string, type: ClientType }[], index: number) {
     if (index >= query.length) return;
-    createClientElement(query[index].name, query[index].path).then(() => createClientElementQuery(query, index + 1));
-}
+    createClientElement(query[index].name, query[index].path, query[index].type).then(() => createClientElementQuery(query, index + 1));
+};
 namespace loginBar {
     export const element = getElementById("loginbar");
     export const launchMenu = getElementById("launch-menu");
@@ -192,6 +217,18 @@ namespace labelButtonGroup {
     };
 };
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
+labelButtonGroup.getElement("gamepanel", 0).addEventListener("click", () => {
+    currentGame = ClientType.GenshinImpact;
+});
+labelButtonGroup.getElement("gamepanel", 1).addEventListener("click", () => {
+    currentGame = ClientType.StarRail;
+});
+labelButtonGroup.getElement("gamepanel", 2).addEventListener("click", () => {
+    currentGame = ClientType.ZenlessZoneZero;
+});
+labelButtonGroup.getElementArray("gamepanel").forEach(e => {
+    e.addEventListener("click", () => reloadClientNameSpan());
+});
 labelButtonGroup.create("menulist", ["[L] 启动", "[I] 安装", "[S] 设置", "[M] 更多"], titleBar.menuListSpan, Colors.WHITE);
 labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
@@ -219,11 +256,12 @@ selectClientButton.addEventListener("click", () => {
 });
 importClientButton.addEventListener("click", () => modal(
     "提示",
-    "接下来请找到你的游戏客户端目录，选择其中的一个文件名类似StarRail的可执行文件",
+    `接下来请找到你的游戏客户端目录，选择其中的一个文件名类似${currentGame}的可执行文件`,
     [
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFile([
             { name: "可执行文件", extensions: ["exe"] }
         ]).then(e => {
+            if (!e) { return; };
             let input = eleTree("input").attr("placeholder", "取个名字...").classNames("wide").attr("id", "client-name");
             modal("导入客户端", eleTree("div", [
                 eleTree("span").attr("innerText", "很好，这个客户端将会被转换为一个PML自定义客户端。当然，不影响使用官方启动器启动"),
@@ -234,9 +272,9 @@ importClientButton.addEventListener("click", () => modal(
                     "click",
                     () => {
                         let input = getElementById<HTMLInputElement>("client-name");
-                        createClient(e, input.value, ClientType.StarRail).then((e) => {
+                        createClient(e, input.value, currentGame).then((e) => {
                             if (e.status) {
-                                createClientElement(input.value, e.message);
+                                createClientElement(input.value, e.message, currentGame);
                             } else {
                                 modal("失败", e.message);
                             };
@@ -252,9 +290,10 @@ loadClientButton.addEventListener("click", () => modal(
     "接下来请找到你的自定义客户端的目录。其应包含一个名为.pml-client的文件夹。",
     [
         eleTree("button").attr("innerText", "了解").listener("click", () => selectFolder().then(e => {
-            loadClient(e).then(e => {
+            if (!e) { return; };
+            loadClient(e, currentGame).then(e => {
                 if (e.status) {
-                    createClientElement(e.message.name, e.message.path);
+                    createClientElement(e.message.name, e.message.path, e.message.type);
                 } else {
                     modal("失败", e.message);
                 };
@@ -263,6 +302,7 @@ loadClientButton.addEventListener("click", () => modal(
     ]
 ));
 titleBar.returnBtn.addEventListener("click", () => {
+    reloadClientNameSpan();
     loginBar.element.addEventListener("transitionend", () => {
         loginBar.launchMenu.style.transform = "scale(100%)";
         loginBar.launchMenu.style.opacity = "1";

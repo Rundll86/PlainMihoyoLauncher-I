@@ -1,5 +1,4 @@
 import process from "process";
-import fs from "fs";
 import readline from "readline";
 interface Log {
     type: LogType,
@@ -16,22 +15,12 @@ export const colorMapper = {
     INFO: "32",
     WARN: "33",
     ERRO: "31"
-}
+};
 export namespace logger {
     let _logs: Log[] = [];
-    let _stdout = "";
-    export function startHandleStdout() {
-        process.stdout.on("data", (data) => {
-            _stdout += data;
-        });
-    };
-    export function getStdout() {
-        return _stdout;
-    };
     export function append(message: messageType, type: LogType) {
         _logs.push({ type, message });
         draw();
-        fs.writeFileSync("log.txt", getStdout());
     };
     export function info(...message: any[]) {
         append(message.join(" "), LogType.INFO);
