@@ -1,5 +1,6 @@
 # Plain Mihoyo Launcher!!!
 [English](/README.localized/README.uk-en.md)
+
 启动器界面与逻辑均模仿[龙腾猫跃](https://afdian.net/a/LTCat)的作品[Plain Craft Launcher](https://afdian.net/p/0164034c016c11ebafcb52540025c377)。纯整活。  
 功能：
 - 常规启动游戏
