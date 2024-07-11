@@ -3,7 +3,7 @@
   "scripts": {
     "test": "npm run build && npm start",
     "build": "tsc -p tsconfig/entry.json && webpack",
-    "dist": "eop build",
+    "dist": "npm run build && eop build",
     "start": "chcp 65001 && eop start"
   },
   "dependencies": {

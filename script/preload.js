@@ -14,10 +14,12 @@ function randomString(length = 10, sets = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 };
 sendApiWithoutArgs("quit");
 sendApiWithoutArgs("minimize");
-sendApiWithoutArgs("launch");
 sendApiWithoutArgs("reload");
 sendApiWithoutArgs("devtool");
 ipcRenderer.on("showInfo", (_, e) => alert(e));
+contextBridge.exposeInMainWorld("launch", (game) => {
+    ipcRenderer.send("launch", game);
+});
 contextBridge.exposeInMainWorld("randomInt", randomInt);
 contextBridge.exposeInMainWorld("randomString", randomString);
 contextBridge.exposeInMainWorld("getClientList", () => {

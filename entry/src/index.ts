@@ -4,6 +4,7 @@ import { logger } from "./logger";
 import * as saveTool from "save-tool";
 import * as messageBox from "./messageBox";
 import path from "path";
+import child_process from "child_process";
 import fs from "fs";
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
@@ -94,8 +95,24 @@ app.on("ready", () => {
             logger.error("用户尝试调用开发者工具，但开发者工具被禁用");
         };
     });
-    ipcMain.on("launch", () => {
-        logger.info("正在启动游戏");
+    ipcMain.on("launch", (_, e: ClientType) => {
+        logger.info(`正在启动：${settings.game[e].currentClient}`);
+        let currentPath = null;
+        getClientList().forEach(f => {
+            if (f.name === settings.game[e].currentClient) {
+                currentPath = f.path;
+            };
+        });
+        if (currentPath) {
+            let _gameStdout = "";
+            child_process.spawn(currentPath).stdout.on("data", (data) => {
+                _gameStdout += data.toString();
+                logger.info(`客户端${settings.game[e].currentClient}输出：${data.toString()}`);
+                fs.writeFileSync("gameLog.txt", _gameStdout, { encoding: "utf8" });
+            });
+        } else {
+            win.webContents.send("cannot-find-client", settings.game[e].currentClient);
+        };
     });
     ipcMain.on("get-client-list", (_, e) => {
         win.webContents.send("get-client-list", { id: e, data: getClientList() });

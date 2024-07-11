@@ -6,8 +6,8 @@ export function quit() {
 export function minimize() {
     window.minimize();
 };
-export function launch() {
-    window.launch();
+export function launch(game: string) {
+    window.launch(game);
 };
 export function reload() {
     window.reload();

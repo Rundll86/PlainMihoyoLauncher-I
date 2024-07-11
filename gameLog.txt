@@ -1,0 +1,7 @@
+[experimental-async-load] Disabled 
+[2024-07-11 10:33:22.468] MultiThreadStackTrace init success!
+Set new unhandled exception filter 00007FF8A8DBD020 to replace 00007FF8A8F0CC30
+[2024-07-11 10:33:22.918] Read and enabled 0 persistent code switches
+GCGMAH active
+url fetch responce: {"code":0,"message":"app running","milliTs":"1720665200765"}
+url fetch responce: {"code":0}

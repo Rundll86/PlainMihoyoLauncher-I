@@ -10,7 +10,7 @@ const clientMenu = getElementById("client-menu");
 const clientList = getElementById("client-list");
 const importClientButton = getElementById("import-client");
 const loadClientButton = getElementById("load-client");
-const clientNameSpan = getElementById("client-name");
+const clientNameSpan = getElementById("client-name-label");
 var currentGame = ClientType.GenshinImpact;
 var settings: SettingType = {
     game: {
@@ -236,7 +236,7 @@ labelButtonGroup.create("controlbar", [
 ], controlbar, Colors.WHITE, -1);
 labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
-launchButton.addEventListener("click", () => launch());
+launchButton.addEventListener("click", () => launch(currentGame));
 selectClientButton.addEventListener("click", () => {
     getClientList().then(e => {
         loginBar.launchMenu.addEventListener("transitionend", () => {
@@ -272,6 +272,7 @@ importClientButton.addEventListener("click", () => modal(
                     "click",
                     () => {
                         let input = getElementById<HTMLInputElement>("client-name");
+                        console.log(e, input.value, currentGame);
                         createClient(e, input.value, currentGame).then((e) => {
                             if (e.status) {
                                 createClientElement(input.value, e.message, currentGame);

@@ -16,11 +16,11 @@ What game we support now：
 
 a **pre-history time** `combat game` without <u>_**Male characters**_</u> no supporting, because <s>**we can't find it**</s>.
 
-Progress of development [ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
+Progress of development [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
 
 Todo-list
 - <s>*Classify & manage local client*</s>
-- Game starting
+- <s>*Game starting*</s>
 - Plug-in loader
 - - official plug-in
 - - - FoxProxy（Proxy network）

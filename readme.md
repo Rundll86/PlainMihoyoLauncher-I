@@ -18,11 +18,11 @@
 
 某 **远古时期** 的 <u>_**没有男角色**_</u> 的 `格斗游戏` 暂时没有适配，原因是<s>**这些资源太少**</s>了。
 
-开发进度 [ <span style="color:green">=</span><span style="color:red">---------</span> ] 13%
+开发进度 [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
 
 Todo-list
 - <s>*客户端分类管理*</s>
-- 启动游戏
+- <s>*启动游戏*</s>
 - 插件加载器
 - - 官方插件
 - - - FoxProxy（代理流量）
