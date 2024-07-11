@@ -14,13 +14,13 @@ Ayudamos estos video juegos ahora£∫
 - Honkai: StarRail
 - Zenless Zone Zero
 
-un**prehistoria**   `Videojuego de lucha` que<u>_**sin hombres**_</u>no tenemos servicio ahora , porque<s>**No lo tenemos**</s>¡À°£
+un **prehistoria** `Videojuego de lucha` que <u>_**sin hombres**_</u> no tenemos servicio ahora , porque <s>**No lo tenemos**</s> ¡À°£
 
- El progreso del desarrollo [ <span style="color:green">=</span><span style="color:red">---------</span> ] 10%
+El progreso del desarrollo [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
 
 Todo-list
-- Cliente clasificar y administrar
-- Abrir los Videojuegos
+- <s>*Cliente clasificar y administrar*</s>
+- <s>*Abrir los Videojuegos*</s>
 - Cargador de plugin
 - - Plugin oficial
 - - - FoxProxy£®servidor proxy£©
