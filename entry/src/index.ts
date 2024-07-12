@@ -6,6 +6,7 @@ import * as messageBox from "./messageBox";
 import path from "path";
 import child_process from "child_process";
 import fs from "fs";
+import { PlainMihoyoLauncher } from "./pml-plugin";
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");
@@ -67,7 +68,10 @@ function getClientList() {
 var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
 var settings: SettingType = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "setting.json")).toString());
 logger.info("配置文件解析完成");
+logger.info("正在加载插件模块");
+(process as any).plugins = PlainMihoyoLauncher;
 app.on("ready", () => {
+    logger.info("正在创建窗口");
     const winWidth = 1280, winHeight = 720;
     const win = new BrowserWindow({
         width: winWidth,
@@ -82,7 +86,6 @@ app.on("ready", () => {
         icon: "img/favicon.ico",
         title: "Plain Mihoyo Launcher"
     });
-    logger.info("正在创建窗口");
     win.loadFile(saveTool.fromWorkdir("index.html"));
     ipcMain.on("quit", () => { app.quit(); logger.warning("用户退出"); });
     ipcMain.on("minimize", () => { win.minimize(); logger.warning("用户最小化") });

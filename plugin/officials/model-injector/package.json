@@ -1,0 +1,14 @@
+{
+  "name": "model-injector",
+  "version": "1.0.0",
+  "main": "plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "plain-mihoyo-launcher": "^1.0.0"
+  }
+}

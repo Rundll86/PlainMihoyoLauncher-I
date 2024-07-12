@@ -1,0 +1,7 @@
+{
+  "name": "plain-mihoyo-launcher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "pml-plugin.d.ts",
+  "scripts": {}
+}
