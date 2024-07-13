@@ -7,8 +7,9 @@
     "start": "chcp 65001 && eop start"
   },
   "dependencies": {
+    "@types/adm-zip": "^0.5.5",
+    "adm-zip": "^0.5.14",
     "electron-ofp": "^1.0.101",
-    "iconv-lite": "^0.6.3",
     "save-tool": "^1.0.3",
     "ts-loader": "^9.5.1",
     "type-electron": "^1.0.4",

@@ -1,14 +1,16 @@
 {
-  "name": "model-injector",
-  "version": "1.0.0",
-  "main": "plugin.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "plain-mihoyo-launcher": "^1.0.0"
-  }
+    "name": "model-injector",
+    "version": "1.0.0",
+    "main": "plugin.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Unknown",
+    "license": "ISC",
+    "description": "Some plugin for PlainMihoyoLauncher.",
+    "dependencies": {
+        "plain-mihoyo-launcher": "^1.0.1"
+    },
+    "displayName": "Some Plugin",
+    "supporttedGame": "all"
 }

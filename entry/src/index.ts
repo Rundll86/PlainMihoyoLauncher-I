@@ -1,12 +1,13 @@
 import { app, BrowserWindow, dialog, ipcMain } from "type-electron";
 import { ClientConfigFile, ClientInfo, ClientStatus, ClientType, SettingType } from "../../common/dataStruct";
 import { logger } from "./logger";
+import { PlainMihoyoLauncher } from "./pml-plugin";
 import * as saveTool from "save-tool";
 import * as messageBox from "./messageBox";
 import path from "path";
 import child_process from "child_process";
 import fs from "fs";
-import { PlainMihoyoLauncher } from "./pml-plugin";
+const { Plugins, CurrentPlugin } = PlainMihoyoLauncher;
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");
@@ -226,4 +227,7 @@ app.on("ready", () => {
         };
     });
     messageBox.useRootWindow(win);
+    Plugins.install("plugin/officials/model-injector/model-injector.mpp");
+    Plugins.refresh();
+    Plugins.reload();
 });
