@@ -101,10 +101,28 @@ app.on("ready", () => {
     });
     ipcMain.on("launch", (_, e: ClientType) => {
         logger.info(`正在启动：${settings.game[e].currentClient}`);
-        let currentPath = null;
+        let currentPath: any = null;
         getClientList().forEach(f => {
             if (f.name === settings.game[e].currentClient) {
                 currentPath = f.path;
+            };
+        });
+        let currentVersion: any = null;
+        getClientList().forEach(f => {
+            if (f.name === settings.game[e].currentClient) {
+                currentVersion = f.version;
+            };
+        });
+        Plugins.getPlugins().forEach(f => {
+            if (f.supporttedGame.includes(e) || f.supporttedGame === "all") {
+                Plugins.runPluginEvent(f.id, "onlaunchGame", {
+                    game: e,
+                    path: currentPath,
+                    client: {
+                        name: settings.game[e].currentClient,
+                        version: currentVersion
+                    }
+                });
             };
         });
         if (currentPath) {
@@ -227,7 +245,10 @@ app.on("ready", () => {
         };
     });
     messageBox.useRootWindow(win);
+    logger.info("正在加载官方插件");
     Plugins.install("plugin/officials/model-injector/model-injector.mpp");
+    logger.info("模型注入器加载完成");
     Plugins.refresh();
     Plugins.reload();
+    logger.info("插件刷新与重载完成");
 });

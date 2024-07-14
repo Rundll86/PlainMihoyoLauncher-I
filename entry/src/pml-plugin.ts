@@ -1,9 +1,12 @@
 import * as saveTool from "save-tool";
+import * as messageBox from "./messageBox";
 import AdmZip from "adm-zip";
 import path from "path";
 import fs from "fs";
+import process from "process";
+import { ClientType } from "../../common/dataStruct";
 interface launchArg {
-    game: clientType;
+    game: ClientType;
     path: string;
     client: {
         name: string;
@@ -12,7 +15,7 @@ interface launchArg {
 };
 interface PluginEvents {
     onload: () => void;
-    onlaunchGame: launchFunc;
+    onlaunchGame: (arg: launchArg) => void;
 };
 interface Plugin {
     displayName: string;
@@ -20,18 +23,28 @@ interface Plugin {
     version: string;
     description: string;
     author: string;
-    supporttedGame: clientType[] | "all";
+    supporttedGame: ClientType[] | "all";
     events: PluginEvents;
+    workDirectry: string;
+    required: { [key: string]: any[]; };
 };
-type clientType = "GenshinImpact" | "StarRail" | "ZZZ";
-type launchFunc = (arg: launchArg) => void;
 export namespace PlainMihoyoLauncher {
+    export const MessageBox = messageBox;
     export namespace Plugins {
         let _plugins: Plugin[] = [];
+        export function runPluginEvent<T extends keyof PluginEvents>(id: string, name: T, arg: Parameters<PluginEvents[T]>[0] = undefined) {
+            _plugins.forEach(e => {
+                if (e.id === id) {
+                    process.chdir(e.workDirectry);
+                    e.events[name](arg as any);
+                    process.chdir(path.resolve(__dirname, "../../../.."));
+                };
+            });
+        };
         export function install(pluginPath: string) {
             let pluginFile = new AdmZip(pluginPath);
             let pluginFileName = path.basename(pluginPath);
-            pluginFile.extractAllTo(saveTool.useSaveDir("pml", "plugins", pluginFileName));
+            pluginFile.extractAllTo(saveTool.useSaveDir("pml", "plugins", pluginFileName), true);
         };
         export function refresh() {
             _plugins = [];
@@ -43,7 +56,9 @@ export namespace PlainMihoyoLauncher {
                         events: {
                             onload: () => { },
                             onlaunchGame: () => { },
-                        }
+                        },
+                        workDirectry: saveTool.useSaveDir("pml", "plugins", plugin),
+                        required: {}
                     });
                     CurrentPlugin.setName(pluginConfig.id);
                     require(saveTool.useSaveDir("pml", "plugins", plugin, pluginConfig.entry));
@@ -54,8 +69,8 @@ export namespace PlainMihoyoLauncher {
             return _plugins;
         };
         export function reload() {
-            _plugins.forEach((plugin) => {
-                plugin.events.onload();
+            _plugins.forEach(e => {
+                runPluginEvent(e.id, "onload");
             });
         };
     };
@@ -70,6 +85,22 @@ export namespace PlainMihoyoLauncher {
                     plugin.events[name] = func;
                 };
             });
+        };
+        export function requireArray(name: string) {
+            Plugins.getPlugins().forEach((plugin) => {
+                if (plugin.id == _id) {
+                    plugin.required[name] = [];
+                };
+            })
+        };
+        export function getRequiredArray<T>(name: string): T[] | null {
+            let result: T[] | null = null;
+            Plugins.getPlugins().forEach((plugin) => {
+                if (plugin.id == _id) {
+                    return plugin.required[name] as T[];
+                };
+            });
+            return result;
         };
     };
 };

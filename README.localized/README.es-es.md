@@ -16,15 +16,15 @@ Ayudamos estos video juegos ahora£∫
 
 un **prehistoria** `Videojuego de lucha` que <u>_**sin hombres**_</u> no tenemos servicio ahora , porque <s>**No lo tenemos**</s> ¡À°£
 
-El progreso del desarrollo [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
+El progreso del desarrollo [ <span style="color:green">===</span><span style="color:red">-------</span> ] 33%
 
 Todo-list
 - <s>*Cliente clasificar y administrar*</s>
 - <s>*Abrir los Videojuegos*</s>
-- Cargador de plugin
+- <s>*Cargador de plugin*</s>
 - - Plugin oficial
 - - - FoxProxy£®servidor proxy£©
-- - - ModelInjector£®cargar modelos£©
+- - - <s>*ModelInjector£®cargar modelos£©*</s>
 - - plugin que personalizar
 - - - lenguas£∫`JavaScript` `TypeScript`
 - Cargar recursos

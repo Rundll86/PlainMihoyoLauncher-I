@@ -16,15 +16,15 @@ What game we support now：
 
 a **pre-history time** `combat game` without <u>_**Male characters**_</u> no supporting, because <s>**we can't find it**</s>.
 
-Progress of development [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
+Progress of development [ <span style="color:green">===</span><span style="color:red">-------</span> ] 33%
 
 Todo-list
 - <s>*Classify & manage local client*</s>
 - <s>*Game starting*</s>
-- Plug-in loader
+- <s>*Plug-in loader*</s>
 - - official plug-in
 - - - FoxProxy（Proxy network）
-- - - ModelInjector（Load customize models）
+- - - <s>*ModelInjector（Load customize models）*</s>
 - - Customize plug-in
 - - - Support languages：`JavaScript` `TypeScript`
 - Resource-downloading page

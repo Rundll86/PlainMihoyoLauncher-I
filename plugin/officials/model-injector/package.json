@@ -5,12 +5,12 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "Unknown",
+    "author": "FallingShrimp",
     "license": "ISC",
-    "description": "Some plugin for PlainMihoyoLauncher.",
+    "description": "注入自定义模型到客户端。",
     "dependencies": {
         "plain-mihoyo-launcher": "^1.0.1"
     },
-    "displayName": "Some Plugin",
+    "displayName": "Model Injector",
     "supporttedGame": "all"
 }

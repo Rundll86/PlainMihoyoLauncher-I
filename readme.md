@@ -19,15 +19,15 @@
 
 某 **远古时期** 的 <u>_**没有男角色**_</u> 的 `格斗游戏` 暂时没有适配，原因是<s>**这些资源太少**</s>了。
 
-开发进度 [ <span style="color:green">==</span><span style="color:red">--------</span> ] 20%
+开发进度 [ <span style="color:green">===</span><span style="color:red">-------</span> ] 33%
 
 Todo-list
 - <s>*客户端分类管理*</s>
 - <s>*启动游戏*</s>
-- 插件加载器
+- <s>*插件加载器*</s>
 - - 官方插件
 - - - FoxProxy（代理流量）
-- - - ModelInjector（加载自定义模型）
+- - - <s>*ModelInjector（加载自定义模型）*</s>
 - - 自定义插件
 - - - 支持语言：`JS` `TS`
 - 资源下载页面

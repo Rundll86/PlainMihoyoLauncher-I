@@ -1,5 +1,3 @@
-import process from "process";
-import readline from "readline";
 interface Log {
     type: LogType,
     message: messageType;
@@ -20,7 +18,7 @@ export namespace logger {
     let _logs: Log[] = [];
     export function append(message: messageType, type: LogType) {
         _logs.push({ type, message });
-        draw();
+        consoleMapper[type].call(console, `${front(type)} ${message}`);
     };
     export function info(...message: any[]) {
         append(message.join(" "), LogType.INFO);
@@ -34,17 +32,5 @@ export namespace logger {
     export function front(type: LogType = LogType.INFO) {
         let now = new Date();
         return `[${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} - ${now.getHours()}:${now.getMinutes()}:${now.getMilliseconds()} \x1b[${colorMapper[type]}m${type}\x1b[0m]`;
-    };
-    export function draw(index: number = -1) {
-        if (index < 0) {
-            readline.cursorTo(process.stdout, 0, 0);
-            readline.clearScreenDown(process.stdout);
-            for (let i in _logs) {
-                draw(parseInt(i));
-            };
-        } else {
-            let e = _logs[index];
-            consoleMapper[e.type].call(console, `${front(e.type)} ${e.message}`);
-        };
     };
 };
