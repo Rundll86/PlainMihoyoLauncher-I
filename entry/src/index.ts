@@ -7,7 +7,7 @@ import * as messageBox from "./messageBox";
 import path from "path";
 import child_process from "child_process";
 import fs from "fs";
-const { Plugins, CurrentPlugin } = PlainMihoyoLauncher;
+const { Plugins } = PlainMihoyoLauncher;
 logger.info("模块加载完成");
 saveTool.makeSaveRoot();
 saveTool.makeSaveDir("pml");

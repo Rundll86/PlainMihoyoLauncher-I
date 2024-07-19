@@ -94,6 +94,28 @@ body {
     background-color: rgb(255, 249, 237);
     box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
     position: relative;
+    display: inline-block;
+    height: 100%;
+}
+
+#function-bar {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    flex: 1 1 auto;
+}
+
+#function-bar div.panel {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 50px;
+    padding: 20px;
+}
+
+#function-bar div.selected {
+    opacity: 1;
+    top: 0;
 }
 
 #loginbar.big {
@@ -240,6 +262,7 @@ button.label.white.selected {
 
 #launch-menu {
     width: 100%;
+    height: 100%;
 }
 
 span.small {
@@ -250,7 +273,8 @@ span.gray {
     color: gray;
 }
 
-#client-menu {
+#client-menu,
+#client-setup {
     position: absolute;
     left: -100%;
     top: 0;
@@ -260,8 +284,8 @@ span.gray {
 }
 
 .selector .option {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     padding-left: 15px;
     color: orange;
     border: rgb(255, 249, 237) 1px solid;
@@ -276,16 +300,17 @@ span.gray {
     content: "";
     display: block;
     position: absolute;
-    left: 0px;
-    top: 0;
+    left: 0;
+    top: 5%;
     width: 5px;
     height: 0%;
     background-color: orange;
     border: none;
+    border-radius: 1vw;
 }
 
 .selector .option.selected::before {
-    height: 100%;
+    height: 90%;
 }
 
 .selector .option:hover {
@@ -367,4 +392,44 @@ span.label {
 
 #launch {
     height: fit-content;
+}
+
+#client-setup-list {
+    margin-top: 10px;
+}
+
+.frame {
+    border-radius: 10px;
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+    background-color: white;
+    padding: 20px;
+}
+
+.frame:hover {
+    box-shadow: 0px 0px 7px rgba(182, 118, 0, 0.7);
+}
+
+img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+#client-info-texts {
+    vertical-align: top;
+    display: inline-block;
+    height: 100%;
+    margin-left: 10px;
+}
+
+#client-info-name {
+    margin-top: 3px;
+}
+
+#client-info-description {
+    margin-top: 3px;
+}
+
+span {
+    display: inline-block;
 }

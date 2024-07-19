@@ -1,6 +1,6 @@
 import { ClientType, SettingType } from "../../common/dataStruct";
 import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient, saveSettings } from "./contextApi";
-import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
+import { AnyObject, Colors, ExpandObject, G_E_H_E_M, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
 const controlbar = getElementById("control-bar");
 const launchButton = getElementById("launch");
@@ -8,6 +8,7 @@ const selectClientButton = getElementById("select-client");
 const setupClientButton = getElementById("setup-client");
 const clientMenu = getElementById("client-menu");
 const clientList = getElementById("client-list");
+const clientSetup = getElementById("client-setup");
 const importClientButton = getElementById("import-client");
 const loadClientButton = getElementById("load-client");
 const clientNameSpan = getElementById("client-name-label");
@@ -74,13 +75,16 @@ function eleTree<T extends keyof H_E_T_N_M>(tag: T & string, childs: eleTreeCont
         },
         get outer() {
             return result.outerHTML;
-        }
+        },
     };
 };
 function br() { return eleTree("br"); };
 function useFaSpan(name: string): string {
     return eleTree("span").classNames("fa", "fa-" + name).outer;
 };
+function useCharacterEntity(name: string): string {
+    return `&${name};`;
+}
 function modal(title: string, content: string, buttons: eleTreeContext<HTMLButtonElement>[] = []) {
     function closeModal() {
         modalElement.style.opacity = "0";
@@ -122,7 +126,7 @@ function reloadAllClientOption() {
 };
 function reloadClientNameSpan() {
     clientNameSpan.innerText = settings.game[currentGame].currentClient;
-}
+};
 function createClientElement(name: string, path: string, game: ClientType) {
     let { result } = eleTree("span").classNames(
         "option",
@@ -164,12 +168,99 @@ namespace loginBar {
         element.classList.remove("big");
         element.classList.add("small");
     };
+    export function hide() {
+        launchMenu.addEventListener("transitionend", () => {
+            small();
+        }, { once: true });
+        launchMenu.style.transform = "scale(90%)";
+        launchMenu.style.opacity = "0";
+    };
+    export function show() {
+        element.addEventListener("transitionend", () => {
+            launchMenu.style.transform = "scale(100%)";
+            launchMenu.style.opacity = "1";
+        }, { once: true });
+        big();
+    };
 };
 namespace titleBar {
     export const titleSpan = getElementById("title");
     export const menuListSpan = getElementById("menu-list");
     export const titlePushSpan = getElementById("title-push");
     export const returnBtn = getElementById("return-btn");
+    export function show() {
+        titlePushSpan.style.marginLeft = "0px";
+        titlePushSpan.style.opacity = "1";
+        returnBtn.style.marginLeft = "-25px";
+        returnBtn.style.opacity = "0";
+    };
+    export function hide() {
+        titlePushSpan.style.marginLeft = "30px";
+        titlePushSpan.style.opacity = "0";
+        returnBtn.style.marginLeft = "10px";
+        returnBtn.style.opacity = "1";
+    };
+};
+namespace clientListMenu {
+    export function open(arg: Parameters<typeof createClientElementQuery>[0]) {
+        clientMenu.style.left = "0";
+        clientMenu.style.opacity = "1";
+        clientList.innerHTML = "";
+        createClientElementQuery(arg, 0);
+    };
+    export function close() {
+        clientMenu.style.left = "-100%";
+        clientMenu.style.opacity = "0";
+        clientList.innerHTML = "";
+    };
+};
+namespace clientSetupMenu {
+    let _current = -1;
+    let _list: string[] = [];
+    let _listeners: Function[] = [];
+    export const clientSetupList = getElementById("client-setup-list");
+    export function open() {
+        clientSetup.style.left = "0";
+        clientSetup.style.opacity = "1";
+    };
+    export function close() {
+        clientSetup.style.left = "-100%";
+        clientSetup.style.opacity = "0";
+    };
+    export function update() {
+        _list.forEach(e => {
+            if (_list[_current] === e) {
+                _listeners[_current]();
+                getElementById(e).classList.add("selected");
+                getElementById(e + "-panel").classList.add("selected");
+            } else {
+                getElementById(e).classList.remove("selected");
+                getElementById(e + "-panel").classList.remove("selected");
+            };
+        });
+    };
+    export function create(name: string, label: string) {
+        let { result } = eleTree("span")
+            .classNames("option")
+            .attr("id", name)
+            .attr("innerHTML", label)
+            .listener("click", (e) => {
+                _current = _list.indexOf(name);
+                update();
+            });
+        let index = _list.length;
+        _list.push(name);
+        _listeners.push(() => { });
+        clientSetupList.appendChild(result);
+        update();
+        return (listener: () => void) => {
+            _listeners[index] = listener;
+        };
+    };
+    export function current(index: number = -1) {
+        _current = index;
+        update();
+    };
 };
 namespace labelButtonGroup {
     let _current: AnyObject<number> = {};
@@ -217,15 +308,11 @@ namespace labelButtonGroup {
     };
 };
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
-labelButtonGroup.getElement("gamepanel", 0).addEventListener("click", () => {
-    currentGame = ClientType.GenshinImpact;
-});
-labelButtonGroup.getElement("gamepanel", 1).addEventListener("click", () => {
-    currentGame = ClientType.StarRail;
-});
-labelButtonGroup.getElement("gamepanel", 2).addEventListener("click", () => {
-    currentGame = ClientType.ZenlessZoneZero;
-});
+for (let i in Object.keys(ClientType)) {
+    labelButtonGroup.getElement("gamepanel", parseInt(i)).addEventListener("click", () => {
+        currentGame = Object.values(ClientType)[i];
+    });
+};
 labelButtonGroup.getElementArray("gamepanel").forEach(e => {
     e.addEventListener("click", () => reloadClientNameSpan());
 });
@@ -236,23 +323,32 @@ labelButtonGroup.create("controlbar", [
 ], controlbar, Colors.WHITE, -1);
 labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
+clientSetupMenu.create("client-info", useFaSpan("cube") + useCharacterEntity("nbsp") + "概览")(() => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                let currentClient = e;
+                getElementById<HTMLImageElement>("client-avatar").src = `./img/game/${currentClient.type}.ico`;
+                getElementById("client-info-name").innerText = currentClient.name;
+                getElementById("client-info-description").innerText = settings.game[currentClient.type].label;
+            };
+        });
+    });
+});
+clientSetupMenu.create("client-setting", useFaSpan("wrench") + useCharacterEntity("nbsp") + "设置");
 launchButton.addEventListener("click", () => launch(currentGame));
 selectClientButton.addEventListener("click", () => {
     getClientList().then(e => {
-        loginBar.launchMenu.addEventListener("transitionend", () => {
-            loginBar.small();
-        }, { once: true });
-        loginBar.launchMenu.style.transform = "scale(90%)";
-        loginBar.launchMenu.style.opacity = "0";
-        titleBar.titlePushSpan.style.marginLeft = "30px";
-        titleBar.titlePushSpan.style.opacity = "0";
-        titleBar.returnBtn.style.marginLeft = "10px";
-        titleBar.returnBtn.style.opacity = "1";
-        clientMenu.style.left = "0";
-        clientMenu.style.opacity = "1";
-        clientList.innerHTML = "";
-        createClientElementQuery(e, 0);
+        loginBar.hide();
+        titleBar.hide();
+        clientListMenu.open(e);
     });
+});
+setupClientButton.addEventListener("click", () => {
+    loginBar.hide();
+    titleBar.hide();
+    clientSetupMenu.open();
+    clientSetupMenu.current(0);
 });
 importClientButton.addEventListener("click", () => modal(
     "提示",
@@ -304,17 +400,11 @@ loadClientButton.addEventListener("click", () => modal(
 ));
 titleBar.returnBtn.addEventListener("click", () => {
     reloadClientNameSpan();
-    loginBar.element.addEventListener("transitionend", () => {
-        loginBar.launchMenu.style.transform = "scale(100%)";
-        loginBar.launchMenu.style.opacity = "1";
-    }, { once: true });
-    loginBar.big();
-    titleBar.titlePushSpan.style.marginLeft = "0";
-    titleBar.titlePushSpan.style.opacity = "1";
-    titleBar.returnBtn.style.marginLeft = "-25px";
-    titleBar.returnBtn.style.opacity = "0";
-    clientMenu.style.left = "-100%";
-    clientMenu.style.opacity = "0";
+    loginBar.show();
+    titleBar.show();
+    clientListMenu.close();
+    clientSetupMenu.close();
+    clientSetupMenu.current();
 });
 window.addEventListener("keydown", e => {
     if (e.key === "F5") {

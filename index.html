@@ -17,41 +17,60 @@
         </span>
         <span id="control-bar"></span>
     </div>
-    <div id="loginbar" class="big flexbox flexcenter">
-        <div id="launch-menu" class="flexbox column flex-in-center">
-            <div id="game-panel" class="flexbox flexup"></div>
-            <div class="textcenter flexbox column flexcenter" id="userinfo">
-                <img src="https://bbs-static.miyoushe.com/communityweb/upload/c9d11674eac7631d2210a1ba20799958.png"
-                    id="avatar"><br>
-                <span id="username">Username</span>
-                <span id="accountset">
-                    <button class="label circle"><span class="fa fa-bookmark-o"></span></button>
-                    <button class="label circle"><span class="fa fa-pencil"></span></button>
-                    <button class="label circle"><span class="fa fa-exchange"></span></button>
-                </span>
+    <div id="page" class="flexbox flexcenter">
+        <div id="loginbar" class="big flexbox">
+            <div id="launch-menu" class="flexbox column flex-in-center">
+                <div id="game-panel" class="flexbox flexup"></div>
+                <div class="textcenter flexbox column flexcenter" id="userinfo">
+                    <img src="https://bbs-static.miyoushe.com/communityweb/upload/c9d11674eac7631d2210a1ba20799958.png"
+                        id="avatar"><br>
+                    <span id="username">Username</span>
+                    <span id="accountset">
+                        <button class="label circle"><span class="fa fa-bookmark-o"></span></button>
+                        <button class="label circle"><span class="fa fa-pencil"></span></button>
+                        <button class="label circle"><span class="fa fa-exchange"></span></button>
+                    </span>
+                </div>
+                <div class="textcenter flexbottom" id="launchbar">
+                    <button class="big" id="launch">
+                        启动游戏<br>
+                        <span id="client-name-label" class="small gray">未选择客户端</span>
+                    </button><br>
+                    <button class="small black" id="select-client">客户端选择</button>
+                    <button class="small black" id="setup-client">客户端配置</button>
+                </div>
             </div>
-            <div class="textcenter flexbottom" id="launchbar">
-                <button class="big" id="launch">
-                    启动游戏<br>
-                    <span id="client-name-label" class="small gray">未选择客户端</span>
-                </button><br>
-                <button class="small black" id="select-client">客户端选择</button>
-                <button class="small black" id="setup-client">客户端配置</button>
+            <div id="client-menu">
+                <span class="gray client-menu-title">客户端列表</span><br>
+                <div class="selector" id="client-list"></div>
+                <span class="gray client-menu-title">添加或导入</span><br>
+                <div class="selector" id="append-client">
+                    <span class="option" id="import-client">
+                        <span class="fa fa-dot-circle-o"></span>
+                        导入原版客户端
+                    </span>
+                    <span class="option" id="load-client">
+                        <span class="fa fa-gear"></span>
+                        加载PML自定义客户端
+                    </span>
+                </div>
+            </div>
+            <div id="client-setup">
+                <div class="selector" id="client-setup-list"></div>
             </div>
         </div>
-        <div id="client-menu">
-            <span class="gray client-menu-title">客户端列表</span><br>
-            <div class="selector" id="client-list"></div>
-            <span class="gray client-menu-title">添加或导入</span><br>
-            <div class="selector" id="append-client">
-                <span class="option" id="import-client">
-                    <span class="fa fa-dot-circle-o"></span>
-                    导入原版客户端
-                </span>
-                <span class="option" id="load-client">
-                    <span class="fa fa-gear"></span>
-                    加载PML自定义客户端
-                </span>
+        <div id="function-bar">
+            <div id="client-info-panel" class="panel">
+                <div class="frame" id="client-base-info">
+                    <img id="client-avatar">
+                    <span id="client-info-texts">
+                        <span id="client-info-name"></span><br>
+                        <span id="client-info-description" class="small gray"></span>
+                    </span>
+                </div>
+            </div>
+            <div id="client-setting-panel" class="panel">
+                <div class="frame">testaaa</div>
             </div>
         </div>
     </div>
