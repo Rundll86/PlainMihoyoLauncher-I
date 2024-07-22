@@ -53,6 +53,7 @@ body {
     left: 0;
     top: 0;
     transition: none;
+    overflow: hidden;
 }
 
 #nav {
@@ -110,12 +111,23 @@ body {
     position: absolute;
     left: 0;
     top: 50px;
-    padding: 20px;
+    width: 100%;
+    height: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    overflow: scroll;
+}
+
+#function-bar div.panel::-webkit-scrollbar {
+    display: none;
 }
 
 #function-bar div.selected {
     opacity: 1;
     top: 0;
+    z-index: 1;
 }
 
 #loginbar.big {
@@ -374,12 +386,26 @@ input {
     margin: 5px;
 }
 
+input:hover,
+input:focus {
+    border-color: orange;
+}
+
 input::placeholder {
+    color: rgb(255, 226, 171);
+}
+
+input:hover::placeholder,
+input:focus::placeholder {
     color: rgb(255, 226, 171);
 }
 
 input.wide {
     width: 100%;
+}
+
+input.short {
+    width: 100px;
 }
 
 span.label {
@@ -403,10 +429,24 @@ span.label {
     box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
     background-color: white;
     padding: 20px;
+    width: 80%;
+    margin-top: 20px;
+}
+
+.frame.end {
+    margin-bottom: 40px;
 }
 
 .frame:hover {
     box-shadow: 0px 0px 7px rgba(182, 118, 0, 0.7);
+}
+
+.frame .title {
+    font-weight: bold;
+}
+
+.frame .content {
+    margin: 10px;
 }
 
 img {
@@ -432,4 +472,85 @@ img {
 
 span {
     display: inline-block;
+}
+
+#launch-arg {
+    width: 70%;
+}
+
+span.checkbox {
+    width: 40px;
+    height: 20px;
+    border-radius: 25px;
+    background-color: orange;
+    vertical-align: middle;
+    position: relative;
+    border: orange 2px solid;
+    margin: 5px;
+}
+
+span.checkbox::before {
+    content: "N";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: white;
+    top: 50%;
+    left: 25%;
+    transition: 0.3s;
+    transform: translate(-50%, -50%);
+    color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+span.checkbox.checked::before {
+    left: 75%;
+    background-color: orange;
+    content: "Y";
+}
+
+span.checkbox.checked {
+    background-color: white;
+}
+
+span.checkbox:hover::before {
+    color: orange;
+}
+
+span.checkbox.checked:hover::before {
+    color: white;
+}
+
+.plugin-bar {
+    background-color: transparent;
+    border: transparent 1px solid;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin: 2px;
+}
+
+.plugin-bar .infos {
+    margin-left: 10px;
+}
+
+.plugin-bar .infos .version::before {
+    content: "v";
+    margin-left: 5px;
+}
+
+.plugin-bar .infos .author::before {
+    content: "By ";
+    margin-left: 5px;
+}
+
+.plugin-bar:hover,
+.plugin-bar.selected {
+    background-color: rgb(255, 238, 206);
+    border-color: rgb(255, 226, 171);
 }

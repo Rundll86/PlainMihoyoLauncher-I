@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from "type-electron";
-import { ClientConfigFile, ClientInfo, ClientStatus, ClientType, SettingType } from "../../common/dataStruct";
+import { ClientConfigFile, ClientInfo, ClientStatus, ClientType, PlainPlugin, SettingType } from "../../common/dataStruct";
 import { logger } from "./logger";
 import { PlainMihoyoLauncher } from "./pml-plugin";
 import * as saveTool from "save-tool";
@@ -63,7 +63,60 @@ function getClientList() {
     let result: ClientConfigFile[] = [];
     clients.forEach((e) => {
         result.push(JSON.parse(fs.readFileSync(path.join(e.path, "client.json")).toString()));
-    })
+    });
+    return result;
+};
+function getClientPath(name: string): string | null {
+    let clientDatas = getClientList();
+    for (let i = 0; i < clients.length; i++) {
+        if (clientDatas[i].name === name) {
+            return clients[i].path;
+        };
+    };
+    return null;
+};
+function getClientPluginList(name: string): PlainPlugin[] {
+    let basePath = getClientPath(name);
+    let result: PlainPlugin[] = [];
+    if (basePath) {
+        let deepPath = path.join(basePath, "plugins");
+        fs.readdirSync(deepPath).forEach((e) => {
+            let pluginPath = path.join(deepPath, e);
+            if (e.toUpperCase().endsWith(".MPP") && fs.statSync(pluginPath).isDirectory()) {
+                result.push(JSON.parse(fs.readFileSync(path.join(pluginPath, "mpp-config.json")).toString()));
+            };
+        });
+    };
+    return result;
+};
+function includedToPath(path: string) {
+    return `"${path}"`;
+};
+function genrateLaunchCommand(client: string | null, type: "cmd" | "powershell" = "cmd"): string | null {
+    if (!client) return null;
+    let result: string | null = null;
+    getClientList().forEach((e) => {
+        if (e.name === client) {
+            let command = [
+                "cd",
+                includedToPath(e.launch.workdir),
+                type === "cmd" ? ";" : "&&",
+                includedToPath(e.path),
+                "-screen-fullscreen",
+                e.launch.fullscreen ? 1 : 0
+            ];
+            if (e.launch.window.width > 0) {
+                command.push("-screen-width", e.launch.window.width.toString());
+            };
+            if (e.launch.window.height > 0) {
+                command.push("-screen-height", e.launch.window.height.toString());
+            };
+            if (e.launch.arg) {
+                command.push(e.launch.arg);
+            };
+            result = command.join(" ");
+        };
+    });
     return result;
 }
 var clients: ClientInfo[] = JSON.parse(fs.readFileSync(saveTool.useSaveDir("pml", "clients.json")).toString());
@@ -126,12 +179,11 @@ app.on("ready", () => {
             };
         });
         if (currentPath) {
-            let _gameStdout = "";
-            child_process.spawn(currentPath).stdout.on("data", (data) => {
-                _gameStdout += data.toString();
-                logger.info(`客户端${settings.game[e].currentClient}输出：${data.toString()}`);
-                fs.writeFileSync("gameLog.txt", _gameStdout, { encoding: "utf8" });
-            });
+            let _launchCommand = genrateLaunchCommand(settings.game[e].currentClient, "powershell");
+            logger.info(`启动命令：${_launchCommand}`);
+            if (_launchCommand) {
+                child_process.exec(_launchCommand).stdout?.on("data", (data) => { logger.info(data.toString()); });
+            };
         } else {
             win.webContents.send("cannot-find-client", settings.game[e].currentClient);
         };
@@ -144,10 +196,41 @@ app.on("ready", () => {
         win.webContents.send("get-settings", { id: e, data: settings });
         logger.info("正在获取设置");
     });
-    ipcMain.on("save-settings", (_, e) => {
+    ipcMain.on("save-settings", (_, e: SettingType) => {
         logger.warning("正在保存设置");
         settings = e;
         dumpConfig();
+    });
+    ipcMain.on("save-client", (_, e: ClientConfigFile) => {
+        logger.warning(`正在保存客户端：${e.name}`);
+        let clientPath = getClientPath(e.name);
+        if (clientPath) {
+            fs.writeFileSync(path.join(clientPath, "client.json"), JSON.stringify(e), { encoding: "utf8" });
+        };
+    });
+    ipcMain.on("open-client-folder", (_, e) => {
+        logger.warning(`正在打开客户端文件夹：${e.name}`);
+        let folder = getClientPath(e.name);
+        if (folder) {
+            let target = path.dirname(folder);
+            child_process.spawn("C:/Windows/explorer.exe", [target]);
+        };
+    });
+    ipcMain.on("open-PML-client-folder", (_, e) => {
+        logger.warning(`正在打开PML客户端文件夹：${e.name}`);
+        let folder = getClientPath(e.name);
+        if (folder) {
+            let target = folder;
+            child_process.spawn("C:/Windows/explorer.exe", [target]);
+        };
+    });
+    ipcMain.on("open-client-config-file", (_, e) => {
+        logger.warning(`正在打开客户端配置文件：${e.name}`);
+        let folder = getClientPath(e.name);
+        if (folder) {
+            let target = path.resolve(folder, "client.json");
+            child_process.spawn("C:/Windows/explorer.exe", [target]);
+        };
     });
     ipcMain.handle("select-file", (_, e) => {
         logger.info("打开了文件选择框");
@@ -195,12 +278,22 @@ app.on("ready", () => {
             logger.warning("已清除原有的配置目录");
         };
         fs.mkdirSync(configPath);
+        fs.mkdirSync(path.join(configPath, "plugins"));
         let gameConfig: ClientConfigFile = {
             path: e.path,
-            plugins: [],
+            disabledPlugins: [],
             name: e.name,
             version: "unknown",
-            type: e.game
+            type: e.game,
+            launch: {
+                fullscreen: false,
+                workdir: path.dirname(e.path),
+                window: {
+                    width: -1,
+                    height: -1
+                },
+                arg: ""
+            }
         };
         fs.writeFileSync(path.join(configPath, "client.json"), JSON.stringify(gameConfig), { encoding: "utf8" });
         logger.info("转换成功");
@@ -230,7 +323,7 @@ app.on("ready", () => {
             logger.info("正在验证配置文件完整性");
             logger.info(`客户端名称有效：${clientConfig.name.toString()}`);
             logger.info(`客户端路径有效：${clientConfig.path.toString()}`);
-            logger.info(`客户端插件列表有效：${clientConfig.plugins.toString()}`);
+            logger.info(`客户端插件禁用列表有效：${clientConfig.disabledPlugins.toString()}`);
             logger.info(`客户端类型有效：${clientConfig.type.toString()}`);
             logger.info(`客户端版本有效：${clientConfig.version.toString()}`);
             let current: ClientInfo = {
@@ -243,6 +336,12 @@ app.on("ready", () => {
             logger.error(e);
             return { status: false, message: `这不是一个有效的PML客户端。错误：${e}` };
         };
+    });
+    ipcMain.handle("generate-launch-command", (_, e) => {
+        return genrateLaunchCommand(e.name, e.type);
+    });
+    ipcMain.handle("get-client-plugin-list", (_, e) => {
+        return getClientPluginList(e);
     });
     messageBox.useRootWindow(win);
     logger.info("正在加载官方插件");

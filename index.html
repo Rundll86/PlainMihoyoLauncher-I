@@ -41,8 +41,6 @@
                 </div>
             </div>
             <div id="client-menu">
-                <span class="gray client-menu-title">客户端列表</span><br>
-                <div class="selector" id="client-list"></div>
                 <span class="gray client-menu-title">添加或导入</span><br>
                 <div class="selector" id="append-client">
                     <span class="option" id="import-client">
@@ -54,6 +52,8 @@
                         加载PML自定义客户端
                     </span>
                 </div>
+                <span class="gray client-menu-title">客户端列表</span><br>
+                <div class="selector" id="client-list"></div>
             </div>
             <div id="client-setup">
                 <div class="selector" id="client-setup-list"></div>
@@ -66,11 +66,73 @@
                     <span id="client-info-texts">
                         <span id="client-info-name"></span><br>
                         <span id="client-info-description" class="small gray"></span>
+                        <span id="client-info-version" class="small gray"></span>
+                        <span class="small gray">版本</span>
                     </span>
                 </div>
+                <div class="frame">
+                    <span class="title">个性化</span>
+                    <div class="content">
+                        客户端类型
+                        <span id="client-type-selector"></span><br>
+                        <button class="padding-small" id="change-name">修改名称</button>
+                        <button class="padding-small" id="change-version">修改游戏版本</button>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="title">快捷打开</span>
+                    <div class="content">
+                        <button class="padding-small" id="open-folder">原版客户端文件夹</button>
+                        <button class="padding-small" id="open-pml-folder">PML客户端文件夹</button>
+                        <button class="padding-small" id="open-config-file">配置文件</button>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="title">导出数据</span>
+                    <div class="content">
+                        <button class="padding-small" id="export-plugin-list">插件列表</button>
+                        <button class="padding-small" id="export-config">配置文件</button>
+                        <button class="padding-small" id="export-all">完整客户端</button>
+                    </div>
+                </div>
+                <div class="frame end">
+                    <span class="title">启动配置</span>
+                    <div class="content">
+                        全屏运行
+                        <span class="checkbox" id="fullscreen"></span><br>
+                        可执行文件的工作目录
+                        <input id="working-dir" placeholder="自动查找"><br>
+                        窗口大小
+                        <input type="number" id="client-width" class="short" placeholder="默认">
+                        ×
+                        <input type="number" id="client-height" class="short" placeholder="默认"><br>
+                        自定义启动参数
+                        <input id="launch-arg" placeholder="无"><br>
+                        <button class="padding-small" id="generate-launch-command-cmd">生成启动命令（Command Prompt）</button>
+                        <button class="padding-small"
+                            id="generate-launch-command-powershell">生成启动命令（PowerShell）</button>
+                    </div>
+                </div>
             </div>
-            <div id="client-setting-panel" class="panel">
-                <div class="frame">testaaa</div>
+            <div id="plugin-manage-panel" class="panel">
+                <div class="frame end">
+                    <span class="title">客户端插件</span><br>
+                    <button class="padding-small">更新</button>
+                    <button class="padding-small">启用</button>
+                    <button class="padding-small">禁用</button>
+                    <button class="padding-small">删除</button>
+                    <div class="content">
+                        <div class="plugin-bar">
+                            <img src="./img/plugin-avatar.png" class="avatar">
+                            <span class="infos">
+                                <span class="title">Title</span>
+                                <span class="version">1.0.0</span>
+                                <span class="author small gray">Author</span><br>
+                                <span class="description small">Loading...</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

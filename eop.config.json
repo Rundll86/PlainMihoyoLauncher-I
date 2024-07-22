@@ -10,12 +10,15 @@
             "img",
             "script",
             "style",
-            "entry/dist",
-            "common"
+            "entry",
+            "common",
+            "plugin/officials"
         ],
         "excludes": [
-            "script/src"
-        ]
+            "script/src",
+            "entry/src"
+        ],
+        "version": ""
     },
     "build": {
         "temp": "temp",

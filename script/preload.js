@@ -48,7 +48,19 @@ contextBridge.exposeInMainWorld("getSettings", () => {
 });
 contextBridge.exposeInMainWorld("saveSettings", (settings) => {
     return ipcRenderer.send("save-settings", settings);
-})
+});
+contextBridge.exposeInMainWorld("saveClient", (client) => {
+    return ipcRenderer.send("save-client", client);
+});
+contextBridge.exposeInMainWorld("openClientFolder", (name) => {
+    return ipcRenderer.send("open-client-folder", { name });
+});
+contextBridge.exposeInMainWorld("openPmlClientFolder", (name) => {
+    return ipcRenderer.send("open-PML-client-folder", { name });
+});
+contextBridge.exposeInMainWorld("openClientConfigFile", (name) => {
+    return ipcRenderer.send("open-client-config-file", { name });
+});
 contextBridge.exposeInMainWorld("selectFile", (filters) => {
     return ipcRenderer.invoke("select-file", filters);
 });
@@ -60,4 +72,10 @@ contextBridge.exposeInMainWorld("createClient", (path, name, game) => {
 });
 contextBridge.exposeInMainWorld("loadClient", (path, game) => {
     return ipcRenderer.invoke("load-client", { path, game });
-}); 
+});
+contextBridge.exposeInMainWorld("generateLaunchCommand", (name, type) => {
+    return ipcRenderer.invoke("generate-launch-command", { name, type });
+});
+contextBridge.exposeInMainWorld("getClientPluginList", (name) => {
+    return ipcRenderer.invoke("get-client-plugin-list", name);
+});

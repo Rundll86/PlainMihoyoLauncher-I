@@ -223,7 +223,7 @@ export type eleTreeContext<T extends HTMLElement> = {
     css(name: string): string;
     css(name: string, value: string): eleTreeContext<T>;
     child(childs: HTMLElement[]): eleTreeContext<T>;
-    listener<K extends keyof G_E_H_E_M>(name: K, value: (e: G_E_H_E_M[K]) => void): eleTreeContext<T>;
+    listener<K extends keyof G_E_H_E_M>(name: K, value: (e: G_E_H_E_M[K], t: T) => void): eleTreeContext<T>;
     get outer(): string;
 };
 export type AnyObject<T = any> = { [key: string]: T };

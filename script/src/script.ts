@@ -1,6 +1,6 @@
 import { ClientType, SettingType } from "../../common/dataStruct";
-import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient, saveSettings } from "./contextApi";
-import { AnyObject, Colors, ExpandObject, G_E_H_E_M, H_E_T_N_M, eleTreeContext } from "./dataStruct";
+import { minimize, quit, launch, getClientList, reload, devtool, getSettings, selectFile, createClient, selectFolder, loadClient, saveSettings, saveClient, openClientFolder, openPmlClientFolder, openClientConfigFile, generateLaunchCommand, getClientPluginList } from "./contextApi";
+import { AnyObject, Colors, ExpandObject, H_E_T_N_M, eleTreeContext } from "./dataStruct";
 const gamepanel = getElementById("game-panel");
 const controlbar = getElementById("control-bar");
 const launchButton = getElementById("launch");
@@ -70,7 +70,7 @@ function eleTree<T extends keyof H_E_T_N_M>(tag: T & string, childs: eleTreeCont
             return this;
         },
         listener(name, value) {
-            result.addEventListener(name, value);
+            result.addEventListener(name, (e) => value(e, this.result));
             return this;
         },
         get outer() {
@@ -230,7 +230,7 @@ namespace clientSetupMenu {
     export function update() {
         _list.forEach(e => {
             if (_list[_current] === e) {
-                _listeners[_current]();
+                _listeners[_current](getElementById<HTMLDivElement>(e + "-panel"));
                 getElementById(e).classList.add("selected");
                 getElementById(e + "-panel").classList.add("selected");
             } else {
@@ -253,7 +253,7 @@ namespace clientSetupMenu {
         _listeners.push(() => { });
         clientSetupList.appendChild(result);
         update();
-        return (listener: () => void) => {
+        return (listener: (panel: HTMLDivElement) => void) => {
             _listeners[index] = listener;
         };
     };
@@ -306,7 +306,11 @@ namespace labelButtonGroup {
         _current[name] = status;
         update(name);
     };
+    export function getState(name: string): number {
+        return _current[name];
+    }
 };
+document.querySelectorAll("span.checkbox").forEach(e => e.addEventListener("click", () => e.classList.toggle("checked")));
 labelButtonGroup.create("gamepanel", ["[G] 原神", "[SR] 崩坏：星穹铁道", "[Z] 绝区零"], gamepanel, Colors.ORANGE);
 for (let i in Object.keys(ClientType)) {
     labelButtonGroup.getElement("gamepanel", parseInt(i)).addEventListener("click", () => {
@@ -321,21 +325,169 @@ labelButtonGroup.create("controlbar", [
     useFaSpan("circle-o"),
     useFaSpan("close")
 ], controlbar, Colors.WHITE, -1);
+labelButtonGroup.create("clienttype", ["原神", "崩坏：星穹铁道", "绝区零"], getElementById("client-type-selector"), Colors.ORANGE);
+labelButtonGroup.getElementArray("clienttype").forEach(e => e.addEventListener("click", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.type = Object.values(ClientType)[labelButtonGroup.getState("clienttype")];
+                saveClient(e);
+            };
+        });
+    });
+}));
 labelButtonGroup.getElement("controlbar", 0).addEventListener("click", () => { minimize(); labelButtonGroup.state("controlbar"); });
 labelButtonGroup.getElement("controlbar", 1).addEventListener("click", () => { quit(); labelButtonGroup.state("controlbar"); });
-clientSetupMenu.create("client-info", useFaSpan("cube") + useCharacterEntity("nbsp") + "概览")(() => {
+clientSetupMenu.create("client-info", useFaSpan("cube") + useCharacterEntity("nbsp") + "基本设置")(() => {
     getClientList().then(e => {
         e.forEach(e => {
             if (e.name === settings.game[currentGame].currentClient) {
                 let currentClient = e;
+                let windowSize = currentClient.launch.window;
+                const mapper = Object.values(ClientType);
                 getElementById<HTMLImageElement>("client-avatar").src = `./img/game/${currentClient.type}.ico`;
                 getElementById("client-info-name").innerText = currentClient.name;
+                getElementById("client-info-version").innerText = currentClient.version;
                 getElementById("client-info-description").innerText = settings.game[currentClient.type].label;
+                labelButtonGroup.state("clienttype", mapper.indexOf(currentClient.type));
+                getElementById("fullscreen").classList.toggle("checked", currentClient.launch.fullscreen);
+                getElementById<HTMLInputElement>("working-dir").value = currentClient.launch.workdir;
+                getElementById<HTMLInputElement>("client-width").value = windowSize.width > 0 ? windowSize.width.toString() : "";
+                getElementById<HTMLInputElement>("client-height").value = windowSize.height > 0 ? windowSize.height.toString() : "";
+                getElementById<HTMLInputElement>("launch-arg").value = currentClient.launch.arg;
             };
         });
     });
 });
-clientSetupMenu.create("client-setting", useFaSpan("wrench") + useCharacterEntity("nbsp") + "设置");
+clientSetupMenu.create("plugin-manage", useFaSpan("plug") + useCharacterEntity("nbsp") + "插件管理")((f) => {
+    let content = f.querySelector(".content") as HTMLDivElement;
+    content.innerHTML = "";
+    getClientPluginList(settings.game[currentGame].currentClient).then(e => {
+        e.forEach(e => {
+            let infos = [
+                eleTree("span").attr("innerText", e.displayName).classNames("title"),
+                eleTree("span").attr("innerText", e.version).classNames("version"),
+                eleTree("span").attr("innerText", e.author).classNames("author", "small", "gray"),
+                br(),
+                eleTree("span").attr("innerText", e.description).classNames("description", "small")
+            ];
+            if (e.supporttedGame === "all") {
+                infos.push(eleTree("span").attr("innerText", "通用").classNames("label"));
+            } else {
+                e.supporttedGame.forEach(e => {
+                    infos.push(eleTree("span").attr("innerText", settings.game[e].label).classNames("label"));
+                });
+            };
+            let { result } = eleTree("div", [
+                eleTree("img").attr("src", `./img/plugin/${e.displayName}.png`).classNames("avatar").listener("error", (e) => {
+                    let img = e.target as HTMLImageElement;
+                    img.src = "./img/plugin-avatar.png";
+                }),
+                eleTree("span", infos).classNames("infos")
+            ]).classNames("plugin-bar").listener("click", (e, t) => {
+                t.classList.toggle("selected");
+            });
+            content.appendChild(result);
+        });
+    });
+});
+getElementById("change-name").addEventListener("click", () => {
+    modal("修改客户端名称", eleTree("input").attr("placeholder", "输入新的名称...").attr("id", "client-name").outer, [
+        eleTree("button").attr("innerText", "确定").listener("click", () => {
+            getClientList().then(e => {
+                e.forEach(e => {
+                    if (e.name === settings.game[currentGame].currentClient) {
+                        e.name = getElementById<HTMLInputElement>("client-name").value;
+                        saveClient(e);
+                    };
+                });
+            });
+        })
+    ]);
+});
+getElementById("change-version").addEventListener("click", () => {
+    modal("修改游戏版本", eleTree("input").attr("placeholder", "输入新的版本号...").attr("id", "client-version").outer, [
+        eleTree("button").attr("innerText", "确定").listener("click", () => {
+            getClientList().then(e => {
+                e.forEach(e => {
+                    if (e.name === settings.game[currentGame].currentClient) {
+                        e.version = getElementById<HTMLInputElement>("client-version").value;
+                        saveClient(e);
+                    };
+                });
+            });
+        })
+    ]);
+});
+getElementById("open-folder").addEventListener("click", () => {
+    openClientFolder(settings.game[currentGame].currentClient);
+});
+getElementById("open-pml-folder").addEventListener("click", () => {
+    openPmlClientFolder(settings.game[currentGame].currentClient);
+});
+getElementById("open-config-file").addEventListener("click", () => {
+    openClientConfigFile(settings.game[currentGame].currentClient);
+});
+getElementById("fullscreen").addEventListener("click", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.launch.fullscreen = getElementById("fullscreen").classList.contains("checked");
+                saveClient(e);
+            };
+        });
+    });
+});
+getElementById("working-dir").addEventListener("change", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.launch.workdir = getElementById<HTMLInputElement>("working-dir").value;
+                saveClient(e);
+            };
+        });
+    });
+});
+getElementById("client-width").addEventListener("change", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.launch.window.width = parseInt(getElementById<HTMLInputElement>("client-width").value);
+                saveClient(e);
+            };
+        });
+    });
+});
+getElementById("client-height").addEventListener("change", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.launch.window.height = parseInt(getElementById<HTMLInputElement>("client-height").value);
+                saveClient(e);
+            };
+        });
+    });
+});
+getElementById("launch-arg").addEventListener("change", () => {
+    getClientList().then(e => {
+        e.forEach(e => {
+            if (e.name === settings.game[currentGame].currentClient) {
+                e.launch.arg = getElementById<HTMLInputElement>("launch-arg").value;
+                saveClient(e);
+            };
+        });
+    });
+});
+getElementById("generate-launch-command-cmd").addEventListener("click", () => generateLaunchCommand(settings.game[currentGame].currentClient, "cmd").then(e => {
+    modal("输出", e, [
+        eleTree("button").attr("innerText", "复制到剪切板").listener("click", () => navigator.clipboard.writeText(e))
+    ]);
+}));
+getElementById("generate-launch-command-powershell").addEventListener("click", () => generateLaunchCommand(settings.game[currentGame].currentClient, "powershell").then(e => {
+    modal("输出", e, [
+        eleTree("button").attr("innerText", "复制到剪切板").listener("click", () => navigator.clipboard.writeText(e))
+    ]);
+}));
 launchButton.addEventListener("click", () => launch(currentGame));
 selectClientButton.addEventListener("click", () => {
     getClientList().then(e => {
